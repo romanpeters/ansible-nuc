@@ -1,0 +1,8 @@
+---
+- name: "remove help text from motd"
+  file:
+    path: "/etc/update-motd.d/{{ item }}"
+    state: "absent"
+  with_items:
+    - "10-help-text"
+

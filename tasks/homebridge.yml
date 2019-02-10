@@ -1,0 +1,17 @@
+---
+- name: "create HomeBridge container"
+  docker_container:
+    name: homebridge
+    image: oznu/homebridge
+    network_mode: host
+    env:
+      HOMEBRIDGE_CONFIG_UI: "1"
+      HOMEBRIDGE_CONFIG_UI_PORT: "8780"
+    volumes:
+      - /opt/homebridge:/homebridge
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "8780"
+      traefik.frontend.rule: "Host:homebridge.server.local"
+

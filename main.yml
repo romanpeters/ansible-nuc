@@ -1,0 +1,90 @@
+---
+- hosts: "all"
+  remote_user: "{{ user }}"
+  become: true
+  become_user: "root"
+  become_method: "sudo"
+  gather_facts: no
+
+  handlers:
+    - import_tasks: "handlers/main.yml"
+
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python
+
+  tasks:
+    - name: "system settings"
+      include_tasks: "tasks/system.yml"
+
+    - name: "git"
+      include_tasks: "tasks/git.yml"
+
+    - name: "user settings"
+      include_tasks: "tasks/user.yml"
+
+    - name: "packages"
+      include_tasks: "tasks/packages.yml"
+
+    - name: "Python"
+      include_tasks: "tasks/python.yml"
+
+    - name: "sshd"
+      include_tasks: "tasks/ssh.yml"
+
+    - name: "Install Caddy"
+      include_tasks: "tasks/caddy.yml"
+
+    - name: "Docker"
+      include_tasks: "tasks/docker.yml"
+
+    - name: "Traefik container"
+      include_tasks: "tasks/traefik.yml"
+
+    - name: "Glances container"
+      include_tasks: "tasks/glances.yml"
+
+    - name: "Syncthing container"
+      include_tasks: "tasks/syncthing.yml"
+
+    - name: "Watchtower container"
+      include_tasks: "tasks/watchtower.yml"
+
+    - name: "Mosquitto"
+      include_tasks: "tasks/mosquitto.yml"
+
+    - name: "MariaDB"
+      include_tasks: "tasks/mariadb.yml"
+
+    - name: "InfluxDB"
+      include_tasks: "tasks/influxdb.yml"
+
+    - name: "Grafana"
+      include_tasks: "tasks/grafana.yml"
+
+    - name: "Portainer container"
+      include_tasks: "tasks/portainer.yml"
+
+    - name: "Transmission container"
+      include_tasks: "tasks/transmission.yml"
+
+    - name: "Plex container"
+      include_tasks: "tasks/plex.yml"
+
+    - name: "Minecraft container"
+      include_tasks: "tasks/minecraft.yml"
+
+    - name: "Home Assistant container"
+      include_tasks: "tasks/homeassistant.yml"
+
+    - name: "HomeBridge container"
+      include_tasks: "tasks/homebridge.yml"
+
+    - name: "Ubuntu container"
+      include_tasks: "tasks/ubuntu.yml"
+
+    - name: "ESPHome container"
+      include_tasks: "tasks/esphome.yml"
+
+    - name: "Cloud9"
+      include_tasks: "tasks/cloud9.yml"

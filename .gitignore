@@ -1,0 +1,5 @@
+vars.yml
+*.retry
+*.log
+.idea/
+group_vars/all/vars.yml

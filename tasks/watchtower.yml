@@ -1,0 +1,10 @@
+---
+- name: "create Watchtower container"
+  docker_container:
+    name: watchtower
+    image: v2tec/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart_policy: always
+    restart: yes
+

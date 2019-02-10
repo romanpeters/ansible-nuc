@@ -1,0 +1,17 @@
+---
+- name: "create Syncthing container"
+  docker_container:
+    name: syncthing
+    image: linuxserver/syncthing
+    volumes:
+      - /opt/syncthing:/config
+      - /opt/homeassistant:/homeassistant
+    ports:
+      - "22000:22000"
+      - "21027:21027/udp"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "8384"
+      traefik.frontend.rule: "Host:syncthing.server.local"
+

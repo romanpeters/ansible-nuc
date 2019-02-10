@@ -1,0 +1,14 @@
+10.10.10.20:1080 {
+    root /opt/landingpage/html
+    gzip
+}
+
+10.10.10.20:1081 {
+    root /var/www/caddy/
+    gzip
+}
+
+10.10.10.20:1082 {
+    root /var/www/phpmyadmin/phpmyadmin/
+    gzip
+}

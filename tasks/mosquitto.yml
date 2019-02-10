@@ -1,0 +1,14 @@
+---
+- name: "create Mosquitto container"
+  docker_container:
+    name: mosquitto
+    image: eclipse-mosquitto
+#    volumes:
+#      - /opt/mosquitto:/mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enable: "false"

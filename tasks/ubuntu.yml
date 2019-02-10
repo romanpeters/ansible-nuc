@@ -1,0 +1,12 @@
+---
+- name: "create Ubuntu container"
+  docker_container:
+    name: ubuntu
+    image: dorowu/ubuntu-desktop-lxde-vnc
+    ports:
+      - "5900:5900"
+#      - "6080:80"
+    restart: yes
+    labels:
+      traefik.port: "6080"
+      traefik.frontend.rule: "Host:ubuntu.server.local"

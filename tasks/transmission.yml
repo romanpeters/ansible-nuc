@@ -1,0 +1,24 @@
+---
+- name: "copy Transmission configuration"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/opt/transmission/config/settings.json"
+
+- name: "create Transmission container"
+  docker_container:
+    name: transmission
+    image: linuxserver/transmission
+    ports:
+      - "51413:51413"
+      - "9091:9091"
+    volumes:
+      - /opt/transmission/config:/config
+      - /home/{{ user }}/downloads:/downloads
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "9091"
+      traefik.frontend.rule: "Host:transmission.server.local"
+

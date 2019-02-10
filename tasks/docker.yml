@@ -1,0 +1,53 @@
+---
+- name: "add Docker apt key"
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+  register: add_repository_key
+
+- name: "add Docker repository"
+  apt_repository:
+    repo: "{{ docker.repository }}"
+    state: present
+    update_cache: true
+
+- name: "install Docker"
+  apt:
+    name: docker-ce
+    state: present
+
+- name: "configure systemd unit file"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - "/lib/systemd/system/docker.service"
+  register: docker_systemd
+
+- name: "ensure Docker is started and enabled at boot"
+  service:
+    name: docker
+    state: restarted
+    enabled: true
+    daemon_reload: '{{ docker_systemd is changed }}'
+
+- name: "install Python dependency" 
+  pip:
+    name: docker-py
+
+# passwordless docker
+- name: "ensure group \"docker\" exists"
+  group:
+    name: docker
+    state: present
+
+- name: "adding user '{{ user }}' to group docker"
+  user:
+    name: '{{ user }}'
+    groups: docker
+    append: yes
+

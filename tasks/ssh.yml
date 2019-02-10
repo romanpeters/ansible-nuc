@@ -1,0 +1,10 @@
+---
+- name: "disable password and root login"
+  copy:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+  with_items:
+    - "/etc/ssh/sshd_config"

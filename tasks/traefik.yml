@@ -1,0 +1,64 @@
+---
+- name: "create Traefik directory"
+  file:
+    path: /opt/traefik/
+    state: directory
+    mode: 0755    
+
+- name: "create certs directory"
+  file:
+    path: /opt/traefik/certs     
+    state: directory
+    mode: 0750
+
+- name: "install Python dependency"
+  pip:
+    name: pyOpenSSL  
+
+- name: "generate private key"
+  openssl_privatekey:
+    path: "/opt/traefik/certs/server.pem"
+
+- name: "generate CSR"
+  openssl_csr:
+    path: "/opt/traefik/certs/server.csr"
+    privatekey_path: "/opt/traefik/certs/server.pem"
+    digest: sha512
+    common_name: "*.server.local"
+
+- name: "generate a self-signed OpenSSL certificate"
+  openssl_certificate:
+    path: /opt/traefik/certs/server.cert
+    privatekey_path: /opt/traefik/certs/server.pem
+    csr_path: /opt/traefik/certs/server.csr
+    provider: selfsigned
+
+- name: "copy Traefik configuration"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/opt/traefik/traefik.toml"
+
+- name: "create Docker network"
+  docker_network:
+    name: traefik_proxy
+
+- name: "create Traefik container"
+  docker_container:
+    name: traefik
+    image: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - name: traefik_proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/traefik/traefik.toml:/traefik.toml
+      - /opt/traefik/certs/:/certs/
+    labels:
+      traefik.port: "8080"
+      traefik.frontend.rule: "Host:traefik.server.local"
+    restart_policy: always
+    restart: yes

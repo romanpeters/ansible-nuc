@@ -1,0 +1,50 @@
+---
+- name: "create Minecraft network"
+  docker_network:
+    name: minecraft_net
+
+- name: "create Minecraft Server container"
+  docker_container:
+    name: minecraft-server
+    image: itzg/minecraft-server
+    state: started
+    env:
+      EULA: "TRUE"
+      MEMORY: "4G"
+      VERSION: "SNAPSHOT"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "testing"
+      RCON_PORT: "28016"
+    ports:
+      - "1337:25565"
+    networks:
+      - name: minecraft_net
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enable: "false"
+
+#    labels:
+#      traefik.port: "25565"
+#      traefik.frontend.rule: "Host:minecraft.server.local"
+
+
+- name: "create rcon container"
+  docker_container:
+    name: minecraft-rcon
+    image: itzg/rcon
+    state: started
+    volumes:
+      - "/opt/rcon:/opt/rcon-web-admin/db"
+    networks:
+      - name: traefik_proxy
+      - name: minecraft_net
+#    ports:
+#      - "4326:4326"
+#      - "4327:4327"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "4326"
+      traefik.frontend.rule: "Host:minecraft.server.local"
+

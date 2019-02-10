@@ -1,0 +1,18 @@
+---
+- name: "create Cloud9 container"
+  docker_container:
+    name: cloud9
+    image: kdelfour/cloud9-docker
+    volumes:
+      - /opt/cloud9:/workspace
+      - /opt/homeassistant:/workspace/homeassistant
+
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "80"
+      traefik.backend: cloud9
+      traefik.frontend.rule: "Host:cloud9.server.local"
+

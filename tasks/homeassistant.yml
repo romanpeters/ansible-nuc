@@ -1,0 +1,66 @@
+---
+#- name: "clone Home Assistant config"
+#  git:
+#    repo: https://github.com/romanpeters/home-assistant.git
+#    dest: /opt/homeassistant/config
+#    accept_hostkey: yes
+#    force: yes
+#  become: "{{ user }}"
+
+
+- name: Create a network
+  docker_network:
+    name: macvlan
+    driver: macvlan
+
+- name: "create Home Assistant container"
+  docker_container:
+    name: homeassistant
+    image: homeassistant/home-assistant
+    privileged: yes
+
+    volumes:
+      - /opt/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock:ro
+
+      - /dev/bus/usb:/dev/bus/usb
+      - /var/run/dbus:/var/run/dbus
+      - /sys/class/bluetooth:/sys/class/bluetooth
+      - /var/lib/bluetooth:/var/lib/bluetooth
+
+    ports:
+      - "8123:8123"
+    network_mode: host
+#    networks:
+#      - name: traefik_proxy
+#      - name: macvlan
+    restart_policy: always
+    restart: yes
+    state: started
+    labels:
+      traefik.enable: "false"
+#    labels:
+#      traefik.port: "8123"
+#      traefik.frontend.rule: "Host:home.server.local"
+#      traefik.docker.network: "traefik_proxy"
+#      traefik.default.protocol: "http"
+#      traefik.frontend.headers.SSLRedirect: "true"
+#      traefik.frontend.headers.STSSeconds: "315360000"
+#      traefik.frontend.headers.browserXSSFilter: "true"
+#      traefik.frontend.headers.contentTypeNosniff: "true"
+#      traefik.frontend.headers.forceSTSHeader: "true"
+#      traefik.frontend.headers.SSLHost: "example.com"
+#      traefik.frontend.headers.STSIncludeSubdomains: "true"
+#      traefik.frontend.headers.STSPreload: "true"
+#      traefik.frontend.headers.frameDeny: "true"
+
+#- name: "copy config"
+#  copy:
+#    src: "{{ ha_config_path }}"
+#    dest: /opt/homeassistant/config/
+
+#- name: "start Home Assistant container"
+#  docker_container:
+#    name: homeassistant
+#    state: started

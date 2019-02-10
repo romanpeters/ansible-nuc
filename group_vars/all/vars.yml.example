@@ -1,0 +1,18 @@
+---
+user: username
+hostname: server
+ip_address: "192.168.x.y"
+github_token: ""
+ha_config_path: "/home/username/hass/config/"
+
+password_mariadb: ""
+password_mariadb_home_assistant_user: ""
+password_mariadb_phpmyadmin_user: ""
+blowfish_secret_phpmyadmin: ""
+
+unattended_upgrades:
+  security: true
+  all: true
+
+docker:
+  repository: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"

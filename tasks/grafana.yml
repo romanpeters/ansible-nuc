@@ -1,0 +1,10 @@
+---
+- name: "create Grafana container"
+  docker_container:
+    name: grafana
+    image: grafana/grafana
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "3000"
+      traefik.frontend.rule: "Host:grafana.server.local"

@@ -1,0 +1,24 @@
+---
+- name: "create InfluxDB container"
+  docker_container:
+    name: influxdb
+    image: influxdb
+    volumes:
+      - /opt/influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+    restart_policy: always
+    restart: no
+    labels:
+      traefik.enable: "false"
+
+- name: "wait for container to start"
+  pause:
+    seconds: 5 
+
+- name: "create home_assistant database"
+  uri:
+    url: "http://localhost:8086/query?q={{'CREATE DATABASE home_assistant'|urlencode}}"
+    method: GET
+#    user: admin
+#    password: password
