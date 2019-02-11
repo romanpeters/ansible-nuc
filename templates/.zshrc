@@ -28,6 +28,9 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
+alias sudo='sudo '
+alias srm="trash"
+alias rm='echo "rm is disabled, use srm or /bin/rm instead."'
 alias enter="source .venv/bin/activate || source venv/bin/activate"
 alias permission="stat -c '%a %n' "
 

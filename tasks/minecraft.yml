@@ -17,6 +17,8 @@
       RCON_PORT: "28016"
     ports:
       - "1337:25565"
+    volumes:
+      - /opt/minecraft:/data
     networks:
       - name: minecraft_net
     restart_policy: always

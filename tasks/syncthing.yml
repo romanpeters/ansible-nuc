@@ -6,6 +6,8 @@
     volumes:
       - /opt/syncthing:/config
       - /opt/homeassistant:/homeassistant
+      - /opt/zigbee2mqtt:/zigbee2mqtt
+      - /opt/minecraft:/minecraft
     ports:
       - "22000:22000"
       - "21027:21027/udp"

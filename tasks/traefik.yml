@@ -40,6 +40,7 @@
   with_items:
     - "/opt/traefik/traefik.toml"
 
+
 - name: "create Docker network"
   docker_network:
     name: traefik_proxy

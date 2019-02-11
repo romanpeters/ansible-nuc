@@ -17,6 +17,7 @@
       - "haveged"
       - "tree"
       - "bluetooth"
+      - "trash-cli"
     state: "present"
 
 - name: "install Python utilities"
