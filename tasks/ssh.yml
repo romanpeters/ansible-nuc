@@ -1,4 +1,10 @@
 ---
+- name: "fetch authorized keys from GitHub"
+  authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: https://github.com/{{ user }}.keys
+
 - name: "disable password and root login"
   copy:
     src: "templates{{ item }}"
