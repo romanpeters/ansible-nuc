@@ -4,6 +4,7 @@ hostname: server
 ip_address: "192.168.x.y"
 github_token: ""
 ha_config_path: "/home/username/hass/config/"
+remote_backup_location: "root@host:/var/backups"
 
 password_mariadb: ""
 password_mariadb_home_assistant_user: ""

@@ -14,77 +14,83 @@
       raw: sudo apt-get -y install python
 
   tasks:
-    - name: "system settings"
+    - name: "system"
       include_tasks: "tasks/system.yml"
 
     - name: "git"
       include_tasks: "tasks/git.yml"
 
-    - name: "user settings"
+    - name: "user"
       include_tasks: "tasks/user.yml"
 
     - name: "packages"
       include_tasks: "tasks/packages.yml"
 
-    - name: "Python"
+    - name: "python"
       include_tasks: "tasks/python.yml"
 
     - name: "sshd"
       include_tasks: "tasks/ssh.yml"
 
-    - name: "Install Caddy"
+    - name: "rsnaphsot"
+      include_tasks: "tasks/rsnapshot.yml"
+
+    - name: "caddy"
       include_tasks: "tasks/caddy.yml"
 
-    - name: "Docker"
+    - name: "docker"
       include_tasks: "tasks/docker.yml"
 
-    - name: "Traefik container"
-      include_tasks: "tasks/traefik.yml"
-
-    - name: "Glances container"
-      include_tasks: "tasks/glances.yml"
-
-    - name: "Syncthing container"
-      include_tasks: "tasks/syncthing.yml"
-
-    - name: "Watchtower container"
-      include_tasks: "tasks/watchtower.yml"
-
-    - name: "Mosquitto"
-      include_tasks: "tasks/mosquitto.yml"
-
-    - name: "MariaDB"
-      include_tasks: "tasks/mariadb.yml"
-
-    - name: "InfluxDB"
-      include_tasks: "tasks/influxdb.yml"
-
-    - name: "Grafana"
-      include_tasks: "tasks/grafana.yml"
-
-    - name: "Portainer container"
+    - name: "portainer"
       include_tasks: "tasks/portainer.yml"
 
-    - name: "Transmission container"
+    - name: "traefik"
+      include_tasks: "tasks/traefik.yml"
+
+    - name: "glances"
+      include_tasks: "tasks/glances.yml"
+
+    - name: "syncthing"
+      include_tasks: "tasks/syncthing.yml"
+
+    - name: "watchtower"
+      include_tasks: "tasks/watchtower.yml"
+
+    - name: "mosquitto"
+      include_tasks: "tasks/mosquitto.yml"
+
+    - name: "mariaDB"
+      include_tasks: "tasks/mariadb.yml"
+
+    - name: "influxdb"
+      include_tasks: "tasks/influxdb.yml"
+
+    - name: "grafana"
+      include_tasks: "tasks/grafana.yml"
+
+    - name: "transmission"
       include_tasks: "tasks/transmission.yml"
 
-    - name: "Plex container"
+    - name: "plex"
       include_tasks: "tasks/plex.yml"
 
-    - name: "Minecraft container"
+    - name: "minecraft"
       include_tasks: "tasks/minecraft.yml"
 
-    - name: "Home Assistant container"
+    - name: "home assistant"
       include_tasks: "tasks/homeassistant.yml"
 
-    - name: "HomeBridge container"
+    - name: "homebridge"
       include_tasks: "tasks/homebridge.yml"
 
-    - name: "Ubuntu container"
+    - name: "ubuntu vnc"
       include_tasks: "tasks/ubuntu.yml"
 
-    - name: "ESPHome container"
-      include_tasks: "tasks/esphome.yml"
+#    - name: "ESPHome container"
+#      include_tasks: "tasks/esphome.yml"
 
-    - name: "Cloud9"
+    - name: "cloud9"
       include_tasks: "tasks/cloud9.yml"
+
+    - name: "zigbee2mqtt"
+      include_tasks: "tasks/zigbee2mqtt.yml"

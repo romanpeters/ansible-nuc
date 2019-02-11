@@ -1,0 +1,42 @@
+---
+- name: "install rsnapshot"
+  apt:
+    name:
+      - "rsnapshot"
+    state: "present"
+
+- name: "copy rsnapshot config"
+  copy:
+      src: "templates{{ item }}"
+      dest: "{{ item }}"
+  with_items:
+    - /etc/rsnapshot.conf
+
+- file:
+    path: /var/cache/rsnapshot
+    owner: "{{ user }}"
+
+- name: "schedule daily local backups"
+  cron:
+    name: "rsnapshot daily"
+    hour: "0"
+    job: "rsnapshot daily"
+
+- name: "schedule weekly local backups"
+  cron:
+    name: "rsnapshot weekly"
+    weekday: "0"
+    job: "rsnapshot weekly"
+
+- name: "schedule monthly local backups"
+  cron:
+    name: "rsnapshot monthly"
+    day: "1"
+    job: "rsnapshot monthly"
+
+- name: "schedule push to NAS"
+  cron:
+    name: "daily push rsnapshot to Synology "
+    hour: "9"
+    job: "rsync -avz /var/cache/rsnapshot/ {{ remote_backup_location }}"
+  become_user: "{{ user }}"
