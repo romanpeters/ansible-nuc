@@ -43,6 +43,11 @@ address = ":8080"
     [frontends.frontend2.routes.test_1]
     rule = "Host: home.server.local"
 
+  [frontends.frontend3]
+  backend = "backend3"
+    [frontends.frontend3.routes.test_1]
+    rule = "Host: plex.server.local"
+
 [backends]
   [backends.backend1]
     [backends.backend1.servers.server1]
@@ -52,26 +57,6 @@ address = ":8080"
     [backends.backend2.servers.server1]
     url = "http://10.10.10.20:8123"
 
-#[frontends]
-#  [frontends.landingpage]
-#  backend = "backend-landingpage"
-#    [frontends.landingpage.routes.route1]
-#    rule = "Host:server.local"
-
-#  [frontends.homeassistant]
-#    backend="homeassistant"
-#    entryPoints = ["http", "https"]
-#    passHostHeader = true
-##    proirity = 20
-#    [frontends.homeassistant.routes.route1]
-#      rule="Host:home.server.local"
-
-#[backends]
-#  [backends.landingpage]
-#    [backends.landingpage.servers.host1]
-#    url = "http://10.10.10.20:1080"
-
-#  [backends.homeassistant]
-#    [backends.homeassistant.servers.host1]
-#    url = "http://10.10.10.20:8123"
-##    weight = 10
+  [backends.backend3]
+    [backends.backend3.servers.server1]
+    url = "http://10.10.10.20:32400"
