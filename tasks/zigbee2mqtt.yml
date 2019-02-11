@@ -1,0 +1,15 @@
+---
+- name: "create zigbee2mqtt container"
+  docker_container:
+    name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - /opt/zigbee2mqtt:/app/data
+    devices:
+      - /dev/ttyACM0
+    networks:  # for mqtt
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enable: "false"
