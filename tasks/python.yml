@@ -6,4 +6,5 @@
   with_items:
     - "python3-pip"
     - "virtualenv"
-
+    - "build-essential"
+    - "python3-dev"

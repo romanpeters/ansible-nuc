@@ -1,5 +1,6 @@
 vars.yml
 *.retry
 *.log
+*.bak
 .idea/
 group_vars/all/vars.yml

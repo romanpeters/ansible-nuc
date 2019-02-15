@@ -41,7 +41,7 @@
   file:
       path: /var/www/
       state: directory
-      owner: www-data
+      owner: "{{ user }}"
       group: www-data
       mode: 0775
 
@@ -49,7 +49,7 @@
   file:
       path: /var/www/caddy/
       state: directory
-      owner: www-data
+      owner: "{{ user }}"
       group: www-data
       mode: 0775
 

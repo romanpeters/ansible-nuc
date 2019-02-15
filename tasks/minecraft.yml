@@ -15,6 +15,8 @@
       ENABLE_RCON: "true"
       RCON_PASSWORD: "testing"
       RCON_PORT: "28016"
+      SEED: "-21937183521"
+      WHITELIST: "ElectricMonkey,Don_Deco"
     ports:
       - "1337:25565"
     volumes:
@@ -30,23 +32,39 @@
 #      traefik.port: "25565"
 #      traefik.frontend.rule: "Host:minecraft.server.local"
 
-
-- name: "create rcon container"
-  docker_container:
-    name: minecraft-rcon
-    image: itzg/rcon
-    state: started
-    volumes:
-      - "/opt/rcon:/opt/rcon-web-admin/db"
-    networks:
-      - name: traefik_proxy
-      - name: minecraft_net
+#- name: "create rcon container"
+#  docker_container:
+#    name: minecraft-rcon
+#    image: itzg/rcon
+#    state: started
+#    volumes:
+#      - "/opt/rcon:/opt/rcon-web-admin/db"
+#    networks:
+#      - name: traefik_proxy
+#      - name: minecraft_net
 #    ports:
 #      - "4326:4326"
 #      - "4327:4327"
-    restart_policy: always
-    restart: yes
-    labels:
-      traefik.port: "4326"
-      traefik.frontend.rule: "Host:minecraft.server.local"
+#    restart_policy: always
+#    restart: yes
+#    labels:
+#      traefik.port: "4326"
+#      traefik.frontend.rule: "Host:minecraft.server.local"
+
+- name: "schedule daily auto-save off"
+  cron:
+    name: "minecraft auto-save off"
+    hour: "23"
+    minute: "59"
+    job: "docker exec minecraft-server rcon-cli save-off"
+  become_user: "{{ user }}"
+
+- name: "schedule daily auto-save on"
+  cron:
+    name: "minecraft auto-save on"
+    hour: "0"
+    minute: "5"
+    job: "docker exec minecraft-server rcon-cli save-on"
+  become_user: "{{ user }}"
+
 

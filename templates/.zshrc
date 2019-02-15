@@ -28,6 +28,10 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
+
 alias sudo='sudo '
 alias srm="trash"
 alias rm='echo "rm is disabled, use srm or /bin/rm instead."'

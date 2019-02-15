@@ -16,6 +16,12 @@
     path: /var/cache/rsnapshot
     owner: "{{ user }}"
 
+- name: "schedule hourly local backups"
+  cron:
+    name: "rsnapshot hourly"
+    minute: "0"
+    job: "rsnapshot hourly"
+
 - name: "schedule daily local backups"
   cron:
     name: "rsnapshot daily"

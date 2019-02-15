@@ -63,3 +63,4 @@
       traefik.frontend.rule: "Host:traefik.server.local"
     restart_policy: always
     restart: yes
+
