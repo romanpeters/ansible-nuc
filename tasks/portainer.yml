@@ -10,5 +10,5 @@
     restart: yes
     labels:
       traefik.port: "9000"
-      traefik.frontend.rule: "Host:portainer.server.local"
+      traefik.frontend.rule: "Host:portainer.romanpeters.nl"
 

@@ -7,4 +7,4 @@
     restart: yes
     labels:
       traefik.port: "3000"
-      traefik.frontend.rule: "Host:grafana.server.local"
+      traefik.frontend.rule: "Host:grafana.romanpeters.nl"

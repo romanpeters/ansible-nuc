@@ -11,4 +11,4 @@
       - name: traefik_proxy
     labels:
       traefik.port: "6080"
-      traefik.frontend.rule: "Host:ubuntu.server.local"
+      traefik.frontend.rule: "Host:ubuntu.romanpeters.nl"

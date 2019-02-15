@@ -23,11 +23,11 @@
 #    networks:
 #      - name: traefik_proxy
     restart: yes
-    labels:
-      traefik.enable: "false"
 #    labels:
-#      traefik.port: "32400"
-#      traefik.frontend.rule: "Host:plex.server.local"    
+#      traefik.enable: "false"
+    labels:
+      traefik.port: "32400"
+      traefik.frontend.rule: "Host:plex.romanpeters.nl"    
 #      traefik.protocol: http
 #      traefik.frontend.headers.SSLRedirect: "true"
 #      traefik.frontend.headers.STSSeconds: "315360000"

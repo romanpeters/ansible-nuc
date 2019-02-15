@@ -36,17 +36,17 @@ address = ":8080"
   [frontends.frontend1]
   backend = "backend1"
     [frontends.frontend1.routes.test_1]
-    rule = "Host: server.local"
+    rule = "Host: landingpage.romanpeters.nl"
 
   [frontends.frontend2]
   backend = "backend2"
     [frontends.frontend2.routes.test_1]
-    rule = "Host: home.server.local"
+    rule = "Host: home.romanpeters.nl"
 
-  [frontends.frontend3]
-  backend = "backend3"
-    [frontends.frontend3.routes.test_1]
-    rule = "Host: plex.server.local"
+#  [frontends.frontend3]
+#  backend = "backend3"
+#    [frontends.frontend3.routes.test_1]
+#    rule = "Host: plex.romanpeters.nl"
 
 [backends]
   [backends.backend1]
@@ -57,6 +57,6 @@ address = ":8080"
     [backends.backend2.servers.server1]
     url = "http://10.10.10.20:8123"
 
-  [backends.backend3]
-    [backends.backend3.servers.server1]
-    url = "http://10.10.10.20:32400"
+#  [backends.backend3]
+#    [backends.backend3.servers.server1]
+#    url = "http://10.10.10.20:32400"

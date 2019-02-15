@@ -13,5 +13,5 @@
     restart: yes
     labels:
       traefik.port: "8780"
-      traefik.frontend.rule: "Host:homebridge.server.local"
+      traefik.frontend.rule: "Host:homebridge.romanpeters.nl"
 

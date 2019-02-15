@@ -20,5 +20,5 @@
     restart: yes
     labels:
       traefik.port: "9091"
-      traefik.frontend.rule: "Host:transmission.server.local"
+      traefik.frontend.rule: "Host:transmission.romanpeters.nl"
 

@@ -18,7 +18,7 @@
     labels:
       traefik.port: "61208"
       traefik.backend: glances
-      traefik.frontend.rule: "Host:glances.server.local"
+      traefik.frontend.rule: "Host:glances.romanpeters.nl"
       traefik.frontend.headers.SSLRedirect: "true"
       traefik.frontend.headers.STSSeconds: "315360000"
       traefik.frontend.headers.browserXSSFilter: "true"

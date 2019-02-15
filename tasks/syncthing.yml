@@ -15,5 +15,5 @@
     restart: yes
     labels:
       traefik.port: "8384"
-      traefik.frontend.rule: "Host:syncthing.server.local"
+      traefik.frontend.rule: "Host:syncthing.romanpeters.nl"
 

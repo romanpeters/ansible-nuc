@@ -13,4 +13,4 @@
     restart: no
     labels:
       traefik.port: "6052"
-      traefik.frontend.rule: "Host:esphome.server.local"
+      traefik.frontend.rule: "Host:esphome.romanpeters.nl"

@@ -14,5 +14,5 @@
     labels:
       traefik.port: "80"
       traefik.backend: cloud9
-      traefik.frontend.rule: "Host:cloud9.server.local"
+      traefik.frontend.rule: "Host:cloud9.romanpeters.nl"
 
