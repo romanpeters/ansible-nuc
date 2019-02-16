@@ -1,12 +1,16 @@
 debug = false
-logLevel = "DEBUG"
+logLevel = "INFO"
 
 defaultEntryPoints = ["http", "https"]
 
-[web]  #Run Traefik info page at 8080. 
-address = ":8080"
+[api]
+  entryPoint = "traefik"
+  dashboard = true
 
 [entryPoints]
+  [entryPoints.traefik]
+    address = ":8080"
+
   [entryPoints.http]
     address = ":80"
     [entryPoints.http.redirect]
@@ -15,21 +19,20 @@ address = ":8080"
   [entryPoints.https]
   address = ":443"
     [entryPoints.https.tls]
-      [[entryPoints.https.tls.certificates]]
-      certFile = "/certs/server.cert"
-      keyFile = "/certs/server.pem"
+
+#      [[entryPoints.https.tls.certificates]]
+#      certFile = "/certs/server.cert"
+#      keyFile = "/certs/server.pem"
+
+#  [entryPoints.https.auth.basic]
+#  users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
+#  usersFile = "/path/to/.htpasswd"
 
 #Watch Docker, when new containers are created with label create mapping.
 [docker]
   endpoint = "unix:///var/run/docker.sock"
   domain = "server.local"
   watch = true
-
-
-# API definition
-[api]
-  entryPoint = "traefik"
-  dashboard = true
 
 [file]
 [frontends]
@@ -43,20 +46,49 @@ address = ":8080"
     [frontends.frontend2.routes.test_1]
     rule = "Host: home.romanpeters.nl"
 
-#  [frontends.frontend3]
-#  backend = "backend3"
-#    [frontends.frontend3.routes.test_1]
-#    rule = "Host: plex.romanpeters.nl"
+  [frontends.frontend3]
+  backend = "backend3"
+    [frontends.frontend3.routes.test_1]
+    rule = "Host: e-surveillant.nl"
+    passHostHeader = true
+
+  [frontends.frontend4]
+  backend = "backend3"
+    [frontends.frontend4.routes.test_1]
+    rule = "Host: www.e-surveillant.nl"
+    passHostHeader = true
+
+
 
 [backends]
   [backends.backend1]
     [backends.backend1.servers.server1]
-    url = "http://10.10.10.20:1080"
+    url = "http://10.10.10.20:5001"
 
   [backends.backend2]
     [backends.backend2.servers.server1]
     url = "http://10.10.10.20:8123"
 
-#  [backends.backend3]
-#    [backends.backend3.servers.server1]
-#    url = "http://10.10.10.20:32400"
+  [backends.backend3]
+    [backends.backend3.servers.server1]
+    url = "http://10.10.10.20:5003"
+
+
+
+[acme]
+email = "traefik@romanpeters.nl"
+storage = "acme.json"
+caServer = "https://acme-v02.api.letsencrypt.org/directory"
+#caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+entryPoint = "https"
+  [acme.dnsChallenge]
+  provider = "transip"
+  
+
+[[acme.domains]]
+  main = "*.romanpeters.nl"
+
+[[acme.domains]]
+  main = "e-surveillant.nl"
+  sans = ["www.e-surveillant.nl"]
+
