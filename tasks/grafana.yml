@@ -5,6 +5,9 @@
     image: grafana/grafana
     restart_policy: always
     restart: yes
+    networks:
+      - name: traefik_proxy
+#      - name: influx_net
     labels:
       traefik.port: "3000"
       traefik.frontend.rule: "Host:grafana.romanpeters.nl"
