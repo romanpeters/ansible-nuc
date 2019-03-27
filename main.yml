@@ -83,9 +83,6 @@
     - name: "homebridge"
       include_tasks: "tasks/homebridge.yml"
 
-    - name: "ubuntu vnc"
-      include_tasks: "tasks/ubuntu.yml"
-
     - name: "ESPHome container"
       include_tasks: "tasks/esphome.yml"
 
