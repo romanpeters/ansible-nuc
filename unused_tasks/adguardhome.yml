@@ -1,0 +1,22 @@
+---
+- name: stop systemd-resolved service
+  service:
+      name: systemd-resolved.service
+      state: stopped
+
+- name: "create AdGuard Home container"
+  docker_container:
+    name: adguardhome
+    image: ksey/adguardhome
+    volumes:
+      - /opt/adguardhome/config:/opt/AdGuardHome/config
+    env:
+    pid_mode: host
+    restart_policy: always
+    restart: yes
+    ports:
+      - "53:53"
+    labels:
+      traefik.port: "3000"
+      traefik.frontend.rule: "Host:adguard.romanpeters.nl"
+

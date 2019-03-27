@@ -1,0 +1,16 @@
+---
+- name: install ISC DHCP server
+  apt:
+    name:
+      - isc-dhcp-server
+    state: present
+
+- name: copy dhcpd.conf
+  template:
+      src: "templates{{ item }}"
+      dest: "{{ item }}"
+      owner: root
+      group: root
+  with_items:
+    - /etc/dhpcd.conf
+

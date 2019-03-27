@@ -1,0 +1,18 @@
+
+---
+- name: "create Muximux container"
+  docker_container:
+    name: muximux
+    image: linuxserver/muximux
+    volumes:
+      - /opt/muximux:/config
+    env:
+      TZ: Europe/Amsterdam
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:landingpage.romanpeters.nl"
+

@@ -1,0 +1,15 @@
+---
+- name: "create NANO node container"
+  docker_container:
+    name: nano-node
+    image: nanocurrency/nano
+    volumes:
+      - /opt/nano:/root
+    ports:
+      - "7075:7075"
+      - "7076:7076"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enabled: "false"
+      

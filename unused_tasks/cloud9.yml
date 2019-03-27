@@ -6,7 +6,7 @@
     volumes:
       - /opt/cloud9:/workspace
       - /opt/homeassistant:/workspace/homeassistant
-
+      - /home/{{user}}/projects:/workspace/projects
     networks:
       - name: traefik_proxy
     restart_policy: always

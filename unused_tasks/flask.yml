@@ -1,0 +1,23 @@
+---
+- name: create /var/www/
+  file:
+      path: /var/www/
+      state: directory
+      owner: "{{ user }}"
+      group: www-data
+      mode: 0775
+
+- name: create flask dir
+  file:
+      path: /var/www/flask/
+      state: directory
+      owner: "{{ user }}"
+      group: www-data
+      mode: 0775
+
+- pip:
+    name:
+      - Flask
+      - uwsgi
+    virtualenv: /var/www/flask/venv
+    virtualenv_python: python3

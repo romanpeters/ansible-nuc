@@ -1,0 +1,125 @@
+---
+# https://github.com/yying/l2tp-ipsec-setup
+- name: install strongSwan and xl2tpd
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - wamerican-huge
+    - strongswan
+    - xl2tpd
+
+- name: enable IPv4 traffic forwarding
+  sysctl: 
+    name: net.ipv4.ip_forward
+    state: enabled
+
+- name: Disable IPv4 redirects
+  sysctl: 
+    name: "{{ item }}"
+    state: disabled
+  with_items:
+    - net.ipv4.conf.all.accept_redirects
+    - net.ipv4.conf.all.send_redirects
+
+- name: ensure redirects are disabled immediately
+  shell: echo 0 | tee /proc/sys/net/ipv4/conf/*/*_redirects
+
+- name: copy IPsec configuration file
+  template: 
+    src: templates{{ item }}.j2
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - /etc/ipsec.conf
+  notify: Restart strongSwan
+
+- name: copy xl2tpd configuration file
+  template:
+    src: templates{{ item }}.j2
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - /etc/xl2tpd/xl2tpd.conf
+  notify: Restart xl2tpd
+
+- name: Copy xl2tpd secrets file
+  copy:
+    src: templates{{ item }}.j2
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0600
+  with_items:
+    - /etc/xl2tpd/l2tp-secrets
+
+- name: Copy PPP options file
+  copy:
+    src: templates{{ item }}
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - /etc/ppp/options
+
+- name: copy CHAP secrets file
+  template:
+    src: templates{{ item }}.j2
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0600
+  with_items:
+    - /etc/ppp/chap-secrets
+
+- name: Allow L2TP/IPsec through the firewall
+  command: "{{ item }}"
+  with_items: l2tp_ipsec_firewall_rules
+
+- name: copy the rsyslog config file that prevents incoming L2TP/IPsec traffic from being logged by completely filtering out all messages from pppd, charon, and xl2tpd.
+  copy:
+    src: templates{{ item }}
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - /etc/rsyslog.conf
+
+- name: restart rsyslog to apply the new configuration
+  service:
+    name: rsyslog
+    state: restarted
+
+- name: Generate L2TP/IPSec instructions text file
+  template:
+    src: templates{{ item }}.j2
+    dest: "{{ item }}"
+  with_item:
+    - /root/vpn_information.txt
+
+#---
+#- name: "create IPsec VPN container"
+#  docker_container:
+#    name: ipsec
+#    image: hwdsl2/ipsec-vpn-server
+#    volumes:
+#      - /lib/modules:/lib/modules:ro
+#    env:
+#      VPN_IPSEC_PSK: "{{ ipsec_pre_shared_key }}"
+#      VPN_USER: "{{ user }}"
+#      VPN_PASSWORD: "{{ password_ipsec }}"
+#      VPN_DNS_SRV1: "10.10.10.101"
+#    network_mode: host
+#    ports:
+#      - "500:500"
+#      - "4500:4500"
+#    privileged: yes
+#    restart_policy: always
+#    restart: yes
+#    labels:
+#      traefik.enable: "false"

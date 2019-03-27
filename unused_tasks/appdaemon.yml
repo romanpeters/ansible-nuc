@@ -1,0 +1,18 @@
+---
+- name: "create Appdaemon container"
+  docker_container:
+    name: appdaemon
+    image: acockburn/appdaemon
+    env:
+      HA_URL: "http://10.10.10.20:8123"
+      TOKEN: "{{ appdaemon_token }}"
+    volumes:
+      - /opt/appdaemon:/conf
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "5050"
+      traefik.frontend.rule: "Host:dashboard.romanpeters.nl"
+

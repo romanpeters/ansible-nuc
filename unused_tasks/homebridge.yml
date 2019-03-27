@@ -7,11 +7,22 @@
     env:
       HOMEBRIDGE_CONFIG_UI: "1"
       HOMEBRIDGE_CONFIG_UI_PORT: "8780"
+    ports:
+      - "8780:8780"
     volumes:
       - /opt/homebridge:/homebridge
     restart_policy: always
     restart: yes
     labels:
-      traefik.port: "8780"
-      traefik.frontend.rule: "Host:homebridge.romanpeters.nl"
+      traefik.enable: "false"
+
+- name: allow access to port 8780
+  ufw:
+    comment: HomeBridge
+    rule: allow
+    port: 8780
+    src: "{{ item }}"
+  with_items:
+    - 10.10.10.0/24
+    - 172.17.0.0/24
 
