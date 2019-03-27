@@ -95,4 +95,5 @@
     - name: "VSCode"
       include_tasks: "tasks/vscode.yml"
 
-
+    - name: "COPS"
+      include_tasks: "tasks/cops.yml"

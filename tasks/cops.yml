@@ -1,0 +1,20 @@
+---
+- name: "create COPS container"
+  docker_container:
+    name: cops
+    image: linuxserver/cops
+    volumes:
+      - /opt/cops:/config
+      - /opt/nextcloud/data/{{user}}/files/books:/books
+    env:
+      PUID: '33'
+      PGID: '33'
+      TZ: Europe/Amsterdam
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:cops.romanpeters.nl"
+
