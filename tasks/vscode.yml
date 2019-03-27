@@ -1,0 +1,21 @@
+---
+- name: "create code-server container"
+  docker_container:
+    name: code-server
+    image: codercom/code-server
+    volumes:
+      - /home/{{user}}/projects:/root/project
+      - /opt/homeassistant:/root/homeassistant
+    env:
+      HASS_SERVER: "{{ hass_url }}"
+      HASS_TOKEN: "{{ hass_token }}"
+    networks:
+      - name: traefik_proxy
+    command: "--allow-http --no-auth"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "8443"
+      traefik.backend: code-server
+      traefik.frontend.rule: "Host:code.romanpeters.nl,vscode.romanpeters.nl"
+

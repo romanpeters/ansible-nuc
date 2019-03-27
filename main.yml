@@ -86,11 +86,13 @@
     - name: "ubuntu vnc"
       include_tasks: "tasks/ubuntu.yml"
 
-#    - name: "ESPHome container"
-#      include_tasks: "tasks/esphome.yml"
-
-    - name: "cloud9"
-      include_tasks: "tasks/cloud9.yml"
+    - name: "ESPHome container"
+      include_tasks: "tasks/esphome.yml"
 
     - name: "zigbee2mqtt"
       include_tasks: "tasks/zigbee2mqtt.yml"
+
+    - name: "VSCode"
+      include_tasks: "tasks/vscode.yml"
+
+
