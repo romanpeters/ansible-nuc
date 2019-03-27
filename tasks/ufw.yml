@@ -1,0 +1,19 @@
+---
+- name: Configure ufw defaults
+  command: "{{ item }}"
+  with_items:
+    - ufw default deny incoming
+    - ufw ufw default allow outgoing
+
+- ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+
+- ufw:
+    rule: allow
+    name: OpenSSH
+
+- ufw:
+    rule: allow
+    from: 10.10.10.0/24

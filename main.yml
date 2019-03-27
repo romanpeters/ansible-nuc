@@ -35,6 +35,9 @@
     - name: "rsnaphsot"
       include_tasks: "tasks/rsnapshot.yml"
 
+    - name: "ufw"
+      include_tasks: "tasks/ufw.yml"
+
     - name: "caddy"
       include_tasks: "tasks/caddy.yml"
 
