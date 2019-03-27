@@ -71,6 +71,9 @@
     - name: "grafana"
       include_tasks: "tasks/grafana.yml"
 
+    - name: "telegraf"
+      include_tasks: "tasks/telegraf"
+
     - name: "transmission"
       include_tasks: "tasks/transmission.yml"
 

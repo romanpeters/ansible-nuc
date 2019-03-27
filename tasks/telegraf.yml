@@ -1,0 +1,48 @@
+---
+- name: add Influx repository
+  command: >
+    cat <<EOF | sudo tee /etc/apt/sources.list.d/influxdata.list \
+    deb https://repos.influxdata.com/ubuntu \
+    bionic stable EOF
+
+- name: import apt key
+  command: curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+
+- name: install Telegraf
+  apt:
+    name: "telegraf"
+
+- name: backup Telegraf config
+  copy:
+      src: "{{ item }}"
+      dest: "{{ item }}"
+      backup: yes
+      remote_src: yes
+  with_items:
+    - /etc/telegraf/telegraf.conf
+
+- name: copy Telegraf config
+  copy:
+      src: "templates{{ item }}"
+      dest: "{{ item }}"
+  with_items:
+    - /etc/telegraf/telegraf.conf
+
+- name: adding user telegraf to group docker
+  user:
+    name: telegraf
+    groups: docker
+    append: yes
+
+- name: start and enable Telegraf service
+  service:
+      name: telegraf
+      state: started
+      enabled: yes
+
+- name: allow access to port 51820 
+  ufw:
+    comment: WireGuard
+    rule: allow
+    port: 51820
+    proto: udp
