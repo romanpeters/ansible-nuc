@@ -6,22 +6,30 @@
       owner: "{{ user }}"
       group: "{{ user }}"
 
-- name: pull Homeassistant Config
-  command: "rsync -avz {{ remote_backup_location }}hourly.0/localhost{{ item }} {{ item }}"
-  with_items:
-    - /opt/homeassistant/config/
-  become: "{{ user }}"
+#- name: pull Homeassistant Config
+#  command: "rsync -avz {{ remote_backup_location }}hourly.0/localhost{{ item }} {{ item }}"
+#  with_items:
+#    - /opt/homeassistant/config/
+#  become: "{{ user }}"
+
+- name: "install extra dependencies"
+  apt:
+    name:
+      - "ffmpeg"                    
+      - "vlc"
+    state: "present"
+
 
 - name: "create Home Assistant container"
   docker_container:
     name: homeassistant
     image: homeassistant/home-assistant
     privileged: yes
-
     volumes:
       - /opt/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock:ro
+      - /opt/minecraft/logs/latest.log:/config/minecraft.log
     ports:
       - "8123:8123"
     network_mode: host
@@ -31,3 +39,19 @@
     labels:
       traefik.enable: "false"
 
+- name: allow access to port 8123
+  ufw:
+    comment: Home Assistant
+    rule: allow
+    port: 8123
+    src: "{{ item }}"
+  with_items:
+    - 10.10.10.0/24
+    - 172.17.0.0/24
+
+- name: allow access to port 51827
+  ufw:
+    comment: HomeKit
+    rule: allow
+    port: 51827
+    src: 10.10.10.0/24

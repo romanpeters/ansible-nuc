@@ -7,6 +7,44 @@
     append: yes
     groups:
       - root
+      - audio
+
+- name: "make sure {{ user_2 }} exists"
+  user:
+    name: "{{ user_2 }}"
+    state: present
+
+- name: "create mediamanager group"
+  group:
+    name: mediamanager
+    gid: 1080
+    system: yes
+
+- name: "create mediamanager user"
+  user:
+    name: mediamanager
+    groups:
+      - mediamanager
+      - www-data
+    append: 'yes'
+    uid: 1080
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+
+- name: "create media directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "mediamanager"
+    mode: 0775
+  with_items:
+    - "/home/{{ user }}/downloads"
+    - "/home/{{ user }}/movies"
+    - "/home/{{ user }}/tvseries"
+    - "/home/{{ user_2 }}/movies"
+    - "/home/{{ user_2 }}/tvseries"
 
 - name: "create home directories"
   file:
@@ -15,9 +53,6 @@
     owner: "{{ user }}"
     group: "{{ user }}"
   with_items:
-    - "/home/{{ user }}/downloads"
-    - "/home/{{ user }}/movies"
-    - "/home/{{ user }}/tvseries"
     - "/home/{{ user }}/projects"
 
 # zsh
@@ -47,7 +82,8 @@
     dest: "/home/{{ user }}/.zshrc"
     owner: "{{ user }}"
     group: "{{ user }}"
-  
+    backup: "yes"
+
 - name: Set zsh as default shell
   user:
     name: "{{ user }}"

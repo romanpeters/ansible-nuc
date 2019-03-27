@@ -5,8 +5,8 @@
     image: linuxserver/plex
     network_mode: host
     env:
-      PUID: '1001'
-      PGID: '1001'
+      PUID: '1080'
+      PGID: '1080'
       VERSION: docker
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -14,29 +14,19 @@
       - "/tmp/plex_transcode:/transcode"
       - "/home/{{ user }}/tvseries:/data/tvshows"
       - "/home/{{ user }}/movies:/data/movies"
-    ports:
-      - '32469:32469'
-      - '32469:32469/udp'
-      - '5353:5353/udp'
-      - '1900:1900/udp'
+      - "/home/{{ user_2 }}/movies:/data/{{ user_2 }}_movies"
+      - "/home/{{ user_2 }}/tvseries:/data/{{ user_2 }}_tvshows"
     restart_policy: always
-#    networks:
-#      - name: traefik_proxy
     restart: yes
-#    labels:
-#      traefik.enable: "false"
     labels:
-      traefik.port: "32400"
-      traefik.frontend.rule: "Host:plex.romanpeters.nl"    
-#      traefik.protocol: http
-#      traefik.frontend.headers.SSLRedirect: "true"
-#      traefik.frontend.headers.STSSeconds: "315360000"
-#      traefik.frontend.headers.browserXSSFilter: "true"
-#      traefik.frontend.headers.contentTypeNosniff: "true"
-#      traefik.frontend.headers.forceSTSHeader: "true"
-#      traefik.frontend.headers.SSLHost: plex.server.local
-#      traefik.frontend.headers.STSIncludeSubdomains: "true"
-#      traefik.frontend.headers.STSPreload: "true"
-#      traefik.frontend.headers.frameDeny: "true"
+      traefik.enable: "false"
 
-
+- name: allow access to port 32400
+  ufw:
+    comment: Plex
+    rule: allow
+    port: 32400
+    src: "{{ item }}"
+  with_items:
+    - 10.10.10.0/24
+    - 172.17.0.0/24

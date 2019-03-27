@@ -20,60 +20,74 @@ defaultEntryPoints = ["http", "https"]
   address = ":443"
     [entryPoints.https.tls]
 
-#      [[entryPoints.https.tls.certificates]]
-#      certFile = "/certs/server.cert"
-#      keyFile = "/certs/server.pem"
-
-#  [entryPoints.https.auth.basic]
-#  users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
-#  usersFile = "/path/to/.htpasswd"
-
 #Watch Docker, when new containers are created with label create mapping.
 [docker]
   endpoint = "unix:///var/run/docker.sock"
-  domain = "server.local"
+  domain = "romanpeters.nl"
   watch = true
+
+[traefikLog]
+filePath = "/var/log/traefik/traefik.log"
+
+[accessLog]
+filePath = "/var/log/traefik/access.log"
 
 [file]
 [frontends]
-  [frontends.frontend1]
-  backend = "backend1"
-    [frontends.frontend1.routes.test_1]
+  [frontends.frontend-landingpage-romanpeters-nl]
+  backend = "backend-landingpage"
+    [frontends.frontend-landingpage-romanpeters-nl.routes.test_1]
     rule = "Host: landingpage.romanpeters.nl"
 
-  [frontends.frontend2]
-  backend = "backend2"
-    [frontends.frontend2.routes.test_1]
+  [frontends.frontend-home-romanpeters-nl]
+  backend = "backend-home-assistant"
+    [frontends.frontend-home-romanpeters-nl.routes.test_1]
     rule = "Host: home.romanpeters.nl"
 
-  [frontends.frontend3]
-  backend = "backend3"
-    [frontends.frontend3.routes.test_1]
-    rule = "Host: e-surveillant.nl"
-    passHostHeader = true
+  [frontends.frontend-plex-romanpeters-nl]
+  backend = "backend-plex"
+    [frontends.frontend-plex-romanpeters-nl.routes.test_1]
+    rule = "Host: plex.romanpeters.nl"
 
-  [frontends.frontend4]
-  backend = "backend3"
-    [frontends.frontend4.routes.test_1]
-    rule = "Host: www.e-surveillant.nl"
-    passHostHeader = true
+  [frontends.frontend-synology-romanpeters-nl]
+  backend = "backend-synology"
+    [frontends.frontend-synology-romanpeters-nl.routes.test_1]
+    rule = "Host: synology.romanpeters.nl"
 
+  [frontends.frontend-homebridge-romanpeters-nl]
+  backend = "backend-homebridge"
+    [frontends.frontend-homebridge-romanpeters-nl.routes.test_1]
+    rule = "Host: homebridge.romanpeters.nl"
 
+  [frontends.frontend-pi-hole-romanpeters-nl]
+  backend = "backend-pi-hole"
+    [frontends.frontend-pi-hole-romanpeters-nl.routes.test_1]
+    rule = "Host: pi-hole.romanpeters.nl"
 
 [backends]
-  [backends.backend1]
-    [backends.backend1.servers.server1]
+  [backends.backend-landingpage]
+    [backends.backend-landingpage.servers.server1]
     url = "http://10.10.10.20:5001"
 
-  [backends.backend2]
-    [backends.backend2.servers.server1]
+  [backends.backend-home-assistant]
+    [backends.backend-home-assistant.servers.server1]
     url = "http://10.10.10.20:8123"
 
-  [backends.backend3]
-    [backends.backend3.servers.server1]
-    url = "http://10.10.10.20:5003"
+  [backends.backend-plex]
+    [backends.backend-plex.servers.server1]
+    url = "http://10.10.10.20:32400"
 
+  [backends.backend-synology]
+    [backends.backend-synology.servers.server1]
+    url = "http://10.10.10.100:3998"
 
+  [backends.backend-homebridge]
+    [backends.backend-homebridge.servers.server1]
+    url = "http://10.10.10.20:8780"
+
+  [backends.backend-pi-hole]
+    [backends.backend-pi-hole.servers.server1]
+    url = "http://10.10.10.101"
 
 [acme]
 email = "traefik@romanpeters.nl"
@@ -91,4 +105,3 @@ entryPoint = "https"
 [[acme.domains]]
   main = "e-surveillant.nl"
   sans = ["www.e-surveillant.nl"]
-

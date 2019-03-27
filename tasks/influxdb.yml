@@ -8,9 +8,10 @@
     name: influxdb
     image: influxdb
     volumes:
+      - /var/run/influxdb.sock:/var/run/influxdb.sock
       - /opt/influxdb:/var/lib/influxdb
-#    ports:
-#      - "8086:8086"
+    ports:
+      - "8086:8086"
     networks:
       - name: traefik_proxy
     restart_policy: always

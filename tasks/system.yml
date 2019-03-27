@@ -6,3 +6,5 @@
   with_items:
     - "10-help-text"
 
+- name: "set time zone"
+  command: "cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime"

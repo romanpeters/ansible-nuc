@@ -32,11 +32,13 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
 
-alias sudo='sudo '
 alias srm="trash"
 alias rm='echo "rm is disabled, use srm or /bin/rm instead."'
 alias enter="source .venv/bin/activate || source venv/bin/activate"
 alias permission="stat -c '%a %n' "
+alias ha-check="docker run -it --rm -v /opt/homeassistant/config:/config -v /etc/localtime:/etc/localtime:ro homeassistant/amd64-homeassistant hass -c /config --script check_config"
+alias ha-restart="docker restart homeassistant | lolcat"
+alias ha-refresh="docker run -it --rm -v /opt/homeassistant/config:/config -v /etc/localtime:/etc/localtime:ro homeassistant/amd64-homeassistant hass -c /config --script check_config && docker restart homeassistant | lolcat"
 
 # Show hostname
 export PROMPT='${ret_status} %m %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'

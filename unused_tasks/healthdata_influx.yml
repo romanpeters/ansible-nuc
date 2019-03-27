@@ -1,0 +1,29 @@
+---
+- name: "create healthdata_influx directory"
+  file:
+    path: /opt/healthdata_influx/
+    state: directory
+    mode: 0755
+
+- name: "copy healthdata_influx configuration"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/opt/healthdata_influx/config.yml"
+
+- name: "create healthdata_influx image"
+  command: docker build git@github.com:twstokes/healthdata_influx.git --tag twstokes/healthdata_influx
+  become: "{{ user }}"
+
+- name: "create healthdata_influx container"
+  docker_container:
+    name: healthdata_influx
+    image: twstokes/healthdata_influx
+    state: present
+    volumes:
+      - /opt/nextcloud/data/{{user}}/files/Health:/data
+      - /opt/healthdata_influx/config.yml:/app/config.yml:ro
+    labels:
+      traefik.enabled: "no"
+

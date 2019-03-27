@@ -3,12 +3,19 @@
   docker_container:
     name: watchtower
     image: v2tec/watchtower
+    env:
+      WATCHTOWER_NOTIFICATIONS: "email"
+      WATCHTOWER_NOTIFICATION_EMAIL_FROM: "{{ mu_mail }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_TO: "{{ mail }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER: "smtp.gmail.com"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER: "{{ mu_mail }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD: "{{ mu_mail_password }}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command:
       - homeassistant
-      - zigbee2mqtt
       - minecraft-server
+#      - e-surveillant
     restart_policy: always
     restart: yes
 

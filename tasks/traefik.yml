@@ -33,7 +33,7 @@
       - "443:443"
     env:
       TRANSIP_ACCOUNT_NAME: "{{ user }}"
-      TRANSIP_PRIVATE_KEY_PATH: "/transip"
+      TRANSIP_PRIVATE_KEY_PATH: "/certs/transip"
     networks:
       - name: traefik_proxy
     volumes:
@@ -41,6 +41,7 @@
       - /opt/traefik/traefik.toml:/traefik.toml
       - /opt/traefik/certs/:/certs/
       - /opt/traefik/acme.json:/acme.json
+      - /opt/traefik/logs:/var/log/traefik/
     labels:
       traefik.port: "8080"
       traefik.frontend.rule: "Host:traefik.romanpeters.nl"
