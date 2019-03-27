@@ -109,3 +109,6 @@
 
     - name: "e-surveillant"
       include_tasks: "tasks/e-surveillant.yml"
+
+    - name: "nextcloud"
+      include_tasks: "tasks/nextcloud.yml"
