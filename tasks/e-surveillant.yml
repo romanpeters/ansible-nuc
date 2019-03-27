@@ -1,0 +1,26 @@
+---
+- name: "create E-Surveillant image"
+  command: docker build git@github.com:romanpeters/e-surveillant.git --tag e-surveillant:latest
+  become: "{{ user }}"
+
+- name: "create E-Surveillant container"
+  docker_container:
+    name: e-surveillant
+    image: e-surveillant:latest
+    volumes:
+      - /opt/e-surveillant/client_secret.json:/app/client_secret.json
+      - /opt/e-surveillant/e-surveillant.json:/app/e-surveillant.json
+      - /opt/e-surveillant/flask_config.py:/app/flask_config.py
+    env:
+      TZ: Europe/Amsterdam
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enabled: "false"
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:e-surveillant.nl,www.e-surveillant.nl"
+      traefik.frontend.passHostHeader: "true"
+      traefik.backend: "e-surveillant"
+      

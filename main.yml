@@ -94,3 +94,6 @@
 
     - name: "COPS"
       include_tasks: "tasks/cops.yml"
+
+    - name: "E-Surveillant"
+      include_tasks: "tasks/e-surveillant.yml"
