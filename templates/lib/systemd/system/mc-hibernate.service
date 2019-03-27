@@ -1,0 +1,14 @@
+[Unit]
+Description=mc-hibernate
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/minecraft/
+ExecStart=/opt/minecraft/venv/bin/python3 /opt/minecraft/hibernate.py
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
