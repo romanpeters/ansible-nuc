@@ -15,6 +15,7 @@
     command:
       - homeassistant
       - minecraft-server
+      - heimdall
 #      - e-surveillant
     restart_policy: always
     restart: yes

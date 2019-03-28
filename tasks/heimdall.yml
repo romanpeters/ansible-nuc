@@ -1,0 +1,18 @@
+---
+- name: "create Heimdall container"
+  docker_container:
+    name: heimdall
+    image: linuxserver/heimdall
+    volumes:
+      - /opt/heimdall:/config
+    env:
+      TZ: Europe/Amsterdam
+      FORCE_HTTPS: "true"
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:heimdall.romanpeters.nl,start.romanpeters.nl"
+
