@@ -1,0 +1,17 @@
+---
+- name: "create devopsbot container"
+  command: docker build git@github.com:DevOps-Utrecht/bot.git --tag devopsbot:latest
+  become: "{{ user }}"
+
+- name: "create devopsbot container"
+  docker_container:
+    name: devopsbot
+    image: devopsbot:latest
+    env:
+      TOKEN: "{{ devopsbot_token }}"
+      DEFAULT_CHANNEL: "461951313547362318"
+      TZ: Europe/Amsterdam
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enabled: "false"
