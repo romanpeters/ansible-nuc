@@ -92,6 +92,9 @@
     - name: "sonarr"
       include_tasks: "tasks/sonarr.yml"
 
+    - name: "letterboxd-watchlist"
+      include_tasks: "tasks/letterboxd-watchlist.yml"
+
     - name: "minecraft"
       include_tasks: "tasks/minecraft.yml"
 
