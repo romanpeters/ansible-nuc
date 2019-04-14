@@ -1,0 +1,8 @@
+---
+- name: "install Samba"
+  apt:
+    name: samba
+    state: present
+
+- name: "set samba password"
+  command: "(echo '{{ samba_password }}'; echo '{{ samba_password }}') | smbpasswd -s -a {{ user }}"

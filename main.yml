@@ -38,6 +38,9 @@
     - name: "ufw"
       include_tasks: "tasks/ufw.yml"
 
+    - name: "samba"
+      include_tasks: "tasks/samba.yml"
+
     - name: "caddy"
       include_tasks: "tasks/caddy.yml"
 
