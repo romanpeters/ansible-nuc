@@ -1,0 +1,15 @@
+
+---
+- name: "create HA-Dockermon container"
+  docker_container:
+    name: ha-dockermon
+    image: philhawthorne/ha-dockermon
+    volumes:
+      - /opt/hadockermon:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8126:8126
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enable: "false"

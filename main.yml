@@ -101,6 +101,9 @@
     - name: "home assistant"
       include_tasks: "tasks/homeassistant.yml"
 
+    - name: "ha-dockermon"
+      include_tasks: "tasks/ha-dockermon.yml"
+
     - name: "homebridge"
       include_tasks: "tasks/homebridge.yml"
 
