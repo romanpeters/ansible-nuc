@@ -113,8 +113,8 @@
     - name: "vscode"
       include_tasks: "tasks/vscode.yml"
 
-    - name: "cops"
-      include_tasks: "tasks/cops.yml"
+    - name: "calibre-web"
+      include_tasks: "tasks/calibre-web.yml"
 
     - name: "e-surveillant"
       include_tasks: "tasks/e-surveillant.yml"

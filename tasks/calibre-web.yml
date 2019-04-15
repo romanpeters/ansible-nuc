@@ -1,0 +1,20 @@
+---
+- name: "create calibre-web container"
+  docker_container:
+    name: calibre-web
+    image: linuxserver/calibre-web
+    volumes:
+      - /opt/calibre-web:/config
+      - /home/{{user}}/books:/books
+    env:
+      PUID: '33'
+      PGID: '33'
+      TZ: Europe/Amsterdam
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "8083"
+      traefik.frontend.rule: "Host:calibre.romanpeters.nl"
+  become: "{{ user }}"
