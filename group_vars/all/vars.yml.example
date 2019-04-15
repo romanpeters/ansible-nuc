@@ -2,6 +2,7 @@
 user: username
 user2: username2
 mail: me@example.com
+github_password: ""
 hostname: server
 ip_address: "192.168.x.y"
 github_token: ""
@@ -14,7 +15,13 @@ password_mariadb_phpmyadmin_user: ""
 mu_mail: mu@example.com
 mu_mail_password: hello123
 hass_url: hass.example.com
-hass_token: asdf1234
+hass_token: ""
+devopsbot_token: ""
+monica_key: ""
+monica_salt: ""
+monica_db_password: ""
+monica_url: "https://monica.example.com"
+
 
 unattended_upgrades:
   security: true

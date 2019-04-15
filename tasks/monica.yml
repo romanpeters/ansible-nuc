@@ -1,0 +1,25 @@
+---
+- name: "clone monica repo"
+  git:
+    repo: https://github.com/monicahq/monica.git
+    dest: "/usr/src/docker/monica"
+    force: "yes"
+
+
+- name: "copy monica configuration"
+  template:
+    src: "templates{{ item }}.j2"
+    dest: "{{ item }}"
+  with_items:
+    - "/usr/src/docker/monica/.env"
+
+- name: "copy monica docker-compose"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/usr/src/docker/monica/docker-compose.yml"
+
+- name: "compose up monica"
+  docker_service:
+    project_src: "/usr/src/docker/monica"

@@ -121,3 +121,6 @@
 
     - name: "nextcloud"
       include_tasks: "tasks/nextcloud.yml"
+
+    - name: "monica"
+      include_tasks: "tasks/monica.yml"

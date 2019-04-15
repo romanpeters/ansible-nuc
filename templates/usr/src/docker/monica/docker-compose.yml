@@ -1,0 +1,40 @@
+version: "3.4"
+  
+services:
+  monicahq:
+    build: .
+    image: monicahq/monicahq
+    depends_on:
+      - mysql
+    env_file: .env
+    volumes:
+      - /opt/monica/storage:/var/www/monica/storage
+    restart: always
+    labels:
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:monica.romanpeters.nl"
+    networks:
+      - internal
+      - traefik_proxy
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=sekret_root_password
+      - MYSQL_DATABASE=monica
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+    volumes:
+      - /opt/monica/mysql:/var/lib/mysql
+    restart: always
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - internal
+
+networks:
+  traefik_proxy:
+    external: true
+  internal:
+    external: false
+
