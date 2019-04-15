@@ -35,9 +35,26 @@
     enabled: true
     daemon_reload: '{{ docker_systemd is changed }}'
 
-- name: "install Python dependency" 
+- name: "remove conflicting Python docker"
   pip:
-    name: docker-py
+    name:
+      - docker
+      - docker-py
+      - docker-compose
+    state: absent
+
+- name: "install Python docker-compose" 
+  pip:
+    name: docker-compose
+
+- name: "install Python docker-py"
+  pip:
+    name: docker
+
+- name: "create src dir fo docker"
+  file:
+    path: "/usr/src/docker"
+    state: directory
 
 # passwordless docker
 - name: "ensure group \"docker\" exists"

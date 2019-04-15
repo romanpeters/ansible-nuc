@@ -1,0 +1,17 @@
+---
+- name: "clone sharelatex repo"
+  git:
+    repo: https://github.com/sharelatex/sharelatex
+    dest: "/usr/src/docker/sharelatex"
+    force: "yes"
+
+- name: "copy sharelatex docker-compose"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/usr/src/docker/sharelatex/docker-compose.yml"
+
+- name: "compose up sharelatex"
+  docker_service:
+    project_src: "/usr/src/docker/sharelatex"

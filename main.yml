@@ -127,3 +127,6 @@
 
     - name: "monica"
       include_tasks: "tasks/monica.yml"
+
+    - name: "sharelatex"
+      include_tasks: "tasks/sharelatex.yml"
