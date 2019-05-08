@@ -1,0 +1,109 @@
+version: '2'
+services:
+    sharelatex:
+        restart: always
+        image: sharelatex/sharelatex
+        container_name: sharelatex
+        depends_on:
+            - mongo
+            - redis
+        privileged: true
+        #        ports:
+        #            - 80:80
+        links:
+            - mongo
+            - redis
+        volumes:
+            - /opt/sharelatex/data:/var/lib/sharelatex
+            - /var/run/docker.sock:/var/run/docker.sock
+            #- /var/clsi/compiles:/var/www/sharelatex/clsi/compiles
+        environment:
+            SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
+            SHARELATEX_REDIS_HOST: redis
+            SHARELATEX_APP_NAME: ShareLaTeX
+            
+            ## Set for SSL via nginx-proxy
+            #VIRTUAL_HOST: 103.112.212.22
+
+            SHARELATEX_SECURE_COOKIE: "true"
+            SHARELATEX_BEHIND_PROXY: "true"
+
+            SHARELATEX_SITE_URL: https://sharelatex.romanpeters.nl
+            SHARELATEX_NAV_TITLE: ShareLaTeX
+            # SHARELATEX_HEADER_IMAGE_URL: http://somewhere.com/mylogo.png
+            SHARELATEX_ADMIN_EMAIL: sharelatex@romanpeters.nl
+
+            # SHARELATEX_LEFT_FOOTER: '[{"text": "Powered by <a href=\"https://www.sharelatex.com\">ShareLaTeX</a> 2016"},{"text": "Another page I want to link to can be found <a href=\"here\">here</a>"} ]'
+            # SHARELATEX_RIGHT_FOOTER: '[{"text": "Hello I am on the Right"} ]'
+
+            # SHARELATEX_EMAIL_FROM_ADDRESS: "team@sharelatex.com"
+
+            # SHARELATEX_EMAIL_AWS_SES_ACCESS_KEY_ID: 
+            # SHARELATEX_EMAIL_AWS_SES_SECRET_KEY: 
+
+            # SHARELATEX_EMAIL_SMTP_HOST: smtp.mydomain.com
+            # SHARELATEX_EMAIL_SMTP_PORT: 587
+            # SHARELATEX_EMAIL_SMTP_SECURE: false
+            # SHARELATEX_EMAIL_SMTP_USER: 
+            # SHARELATEX_EMAIL_SMTP_PASS: 
+            # SHARELATEX_EMAIL_SMTP_TLS_REJECT_UNAUTH: true
+            # SHARELATEX_EMAIL_SMTP_IGNORE_TLS: false
+            # SHARELATEX_CUSTOM_EMAIL_FOOTER: "<div>This system is run by department x </div>"
+
+            # SHARELATEX_TEMPLATES_USER_ID: "578773160210479700917ee5"
+
+            # SHARELATEX_PROXY_LEARN: "true"
+        networks:
+            - internal
+            - traefik_proxy   
+        labels:
+            - "traefik.port=80"
+            - "traefik.frontend.rule=Host:sharelatex.romanpeters.nl,latex.romanpeters.nl"
+
+    mongo:
+        restart: always
+        image: mongo
+        container_name: mongo
+        expose:
+            - 27017
+        volumes:
+            - /opt/sharelatex/mongodb:/data/db
+        networks:
+            - internal
+        labels:
+            - "traefik.enable=false"
+
+    redis:
+        restart: always
+        image: redis
+        container_name: redis
+        expose:
+            - 6379
+        volumes:
+            - /opt/sharelatex/redis:/data
+        networks:
+            - internal
+        labels:
+            - "traefik.enable=false"
+
+    # ldap:
+    #    restart: always
+    #    image: rroemhild/test-openldap
+    #    container_name: ldap
+    #    expose:
+    #        - 389
+# nginx-proxy:
+#     image: jwilder/nginx-proxy
+#     container_name: nginx-proxy
+#     ports:
+#       #- "80:80"
+#       - "443:443"
+#     volumes:
+#       - /var/run/docker.sock:/tmp/docker.sock:ro
+#       - /home/sharelatex/tmp:/etc/nginx/certs
+
+networks:
+  traefik_proxy:
+    external: true
+  internal:
+    external: false

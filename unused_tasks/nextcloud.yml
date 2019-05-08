@@ -1,0 +1,20 @@
+---
+- name: "create NextCloud container"
+  docker_container:
+    name: nextcloud
+    image: nextcloud
+    volumes:
+      - /opt/nextcloud:/var/www/html
+      - /home/{{user}}:/var/www/html/data/{{user}}/files
+    restart_policy: always
+    restart: yes
+    env:
+      PUID: '1090'
+      PGID: '1090'
+      TZ: Europe/London
+    networks:
+      - name: traefik_proxy
+    labels:
+      traefik.port: "80"
+      traefik.backend: "nextcloud"
+      traefik.frontend.rule: "Host:nextcloud.romanpeters.nl"

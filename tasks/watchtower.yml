@@ -16,6 +16,7 @@
       - homeassistant
       - minecraft-server
       - heimdall
+        #      - monica_monicahq_1
 #      - e-surveillant
     restart_policy: always
     restart: yes

@@ -1,19 +1,16 @@
 ---
-- name: "create NextCloud container"
-  docker_container:
-    name: nextcloud
-    image: nextcloud
-    volumes:
-      - /opt/nextcloud:/var/www/html
-    restart_policy: always
-    restart: yes
-    env:
-      PUID: '1090'
-      PGID: '1090'
-      TZ: Europe/London
-    networks:
-      - name: traefik_proxy
-    labels:
-      traefik.port: "80"
-      traefik.backend: "nextcloud"
-      traefik.frontend.rule: "Host:nextcloud.romanpeters.nl"
+- name: "create nextcloud directories"
+  file:
+    path: "/usr/src/docker/nextcloud"
+    state: directory
+
+- name: "copy nextcloud docker-compose"
+  template:
+    src: "templates{{ item }}.j2"
+    dest: "{{ item }}"
+  with_items:
+    - "/usr/src/docker/nextcloud/docker-compose.yml"
+
+- name: "compose up nextcloud"
+  docker_service:
+    project_src: "/usr/src/docker/nextcloud"

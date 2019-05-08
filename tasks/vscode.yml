@@ -19,3 +19,13 @@
       traefik.backend: code-server
       traefik.frontend.rule: "Host:code.romanpeters.nl,vscode.romanpeters.nl"
 
+- name: "add container to inventory"
+  add_host:
+    name: code-server
+    ansible_connection: docker
+  changed_when: false
+
+- name: "run command in container"
+  raw: "apt update && apt install -y python3 python3-pip && pip3 install homeassistant-cli"
+  delegate_to: code-server
+

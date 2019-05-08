@@ -105,3 +105,6 @@ entryPoint = "https"
 [[acme.domains]]
   main = "e-surveillant.nl"
   sans = ["www.e-surveillant.nl"]
+
+[[acme.domains]]
+  main = "*.devops-utrecht.nl"

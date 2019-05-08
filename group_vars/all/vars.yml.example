@@ -4,6 +4,7 @@ user2: username2
 mail: me@example.com
 github_password: ""
 hostname: server
+url_host: example.com
 ip_address: "192.168.x.y"
 github_token: ""
 ha_config_path: "/home/username/hass/config/"
@@ -20,7 +21,6 @@ devopsbot_token: ""
 monica_key: ""
 monica_salt: ""
 monica_db_password: ""
-monica_url: "https://monica.example.com"
 
 
 unattended_upgrades:

@@ -21,6 +21,7 @@
       - "trash-cli"
       - "software-properties-common"
       - "sl"
+      - "nfs-common"
     state: "present"
 
 - name: "install Python utilities"

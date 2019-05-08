@@ -18,9 +18,7 @@
     restart_policy: always
     restart: yes
     labels:
-      traefik.enabled: "false"
       traefik.port: "80"
       traefik.frontend.rule: "Host:e-surveillant.nl,www.e-surveillant.nl"
       traefik.frontend.passHostHeader: "true"
-      traefik.backend: "e-surveillant"
       

@@ -43,6 +43,8 @@
     - "/home/{{ user }}/downloads"
     - "/home/{{ user }}/movies"
     - "/home/{{ user }}/tvseries"
+    - "/home/{{ user }}/books"
+    - "/home/{{ user }}/documents"
     - "/home/{{ user_2 }}/movies"
     - "/home/{{ user_2 }}/tvseries"
 

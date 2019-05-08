@@ -15,3 +15,25 @@
     restart: yes
     labels:
       traefik.enabled: "false"
+
+- name: "create devops matrix container"
+  docker_container:
+    name: "devopsmatrix"
+    image: matrixdotorg/synapse
+    volumes:
+      - "/opt/devops/matrix/:/data"
+    env:
+      SYNAPSE_SERVER_NAME: "matrix.devops-utrecht.nl"
+      SYNAPSE_REPORT_STATS: "yes"
+      SYNAPSE_NO_TLS: "1"
+      TZ: "Europe/Amsterdam"
+      SYNAPSE_ENABLE_REGISTRATION: "0"
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enable: "true"
+      traefik.frontend.rule: "Host:matrix.devops-utrecht.nl"
+      traefik.port: "8008"
+
