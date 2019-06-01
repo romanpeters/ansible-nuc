@@ -1,8 +1,7 @@
 version: "3.4"
-  
+
 services:
   monicahq:
-    build: .
     image: monicahq/monicahq
     depends_on:
       - mysql
@@ -10,9 +9,12 @@ services:
     volumes:
       - /opt/monica/storage:/var/www/monica/storage
     restart: always
+    ports:
+      - "3041:80"
     labels:
       - "traefik.port=80"
       - "traefik.frontend.rule=Host:monica.romanpeters.nl"
+      - "traefik.http.frontend.headers.customFrameOptionsValue=ALLOW-FROM https://monica.romanpeters.nl"
     networks:
       - internal
       - traefik_proxy
@@ -37,4 +39,3 @@ networks:
     external: true
   internal:
     external: false
-
