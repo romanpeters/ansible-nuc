@@ -1,0 +1,120 @@
+version: "3"
+ 
+services:
+  homeassistant:
+    image: homeassistant/home-assistant
+    container_name: homeassistant
+    volumes:
+      - /home/{{ user }}/projects/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - traefik_proxy
+    depends_on:
+      - mariadb
+      - mosquitto
+      - zigbee2mqtt
+      - ha-dockermon
+      - glances
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_proxy"
+      - "traefik.frontend.rule=Host:home.{{ url_host }}"
+      - "traefik.port=8123"
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+#    volumes:
+#      - /var/docker/mosquitto:/mosquitto
+    networks:
+      - traefik_proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=false"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt
+    container_name: zigbee2mqtt
+    volumes:
+      - /var/docker/zigbee2mqtt:/app/data
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    networks:
+      - traefik_proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=false"
+
+  ha-dockermon:
+    image: philhawthorne/ha-dockermon
+    container_name: ha-dockermon
+    environment:
+      - TZ=Europe/Amsterdam
+    restart: unless-stopped
+    networks:
+      - traefik_proxy
+    volumes:
+      - /var/docker/hadockermon:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=false"
+
+  glances:
+    image: nicolargo/glances
+    container_name: glances
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - GLANCES_OPT=-w
+    networks:
+      - traefik_proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_proxy"
+      - "traefik.frontend.rule=Host:glances.{{ url_host }}"
+      - "traefik.port=61208"
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb_homeassistant
+    environment:
+      - MYSQL_ROOT_PASSWORD={{ password_mariadb }}
+      - MYSQL_DATABASE=homeassistant
+    restart: unless-stopped
+    networks:
+      - traefik_proxy
+    volumes:
+      - /var/docker/homeassistant/mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - "traefik.enable=false"
+
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /var/docker/esphome:/config
+#    devices:
+#      - /dev/ttyUSB0
+    ports:
+      - "6123:6123"
+    networks:
+      - traefik_proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_proxy"
+      - "traefik.frontend.rule=Host:esphome.{{ url_host }}"
+      - "traefik.port=6052"
+
+networks:
+  traefik_proxy:
+    external: true
+
