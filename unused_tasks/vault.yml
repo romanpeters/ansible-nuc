@@ -1,0 +1,82 @@
+---
+# https://releases.hashicorp.com/vault/1.1.2/vault_1.1.2_linux_arm64.zip
+- name: Set vars version
+  set_fact:
+    consul_v: 1.5.1
+    vault_v: 1.1.2
+
+- name: Download consul
+  get_url:
+    url: https://releases.hashicorp.com/consul/{{consul_v}}/consul_{{consul_v}}_linux_amd64.zip
+    dest: /tmp/consul_{{ consul_v }}.zip
+
+- name: Unzip consul
+  unarchive:
+    src: /tmp/consul_{{ consul_v }}.zip
+    dest: /usr/bin
+    remote_src: yes
+
+- name: Copy consul service
+  copy:
+      src: templates/lib/systemd/system/consul.service.j2
+      dest: /lib/systemd/system/consul.service
+      remote_src: no
+
+- name: Ensure config dir exists
+  file:
+    path: /etc/consul.d/
+    state: directory
+
+- name: Copy consul config
+  copy:
+      src: templates/etc/consul.d/ui.json
+      dest: /etc/consul.d/ui.json
+      remote_src: no
+
+- name: Start and enable consul service
+  service:
+      name: consul.service
+      state: restarted
+      enabled: yes
+
+- name: Download vault
+  get_url:
+    url: https://releases.hashicorp.com/vault/{{vault_v}}/vault_{{vault_v}}_linux_amd64.zip
+    dest: /tmp/vault_{{ vault_v }}.zip
+
+- name: Unzip vault
+  unarchive:
+    src: /tmp/vault_{{ vault_v }}.zip
+    dest: /usr/bin
+    remote_src: yes
+
+- name: Ensure vault dir exists
+  file:
+    path: /etc/vault/
+    state: directory
+
+- name: copy vault config
+  copy:
+      src: templates/etc/vault/config.hcl.j2
+      dest: /etc/vault/config.hcl
+      remote_src: no
+
+- name: Copy vault service
+  copy:
+      src: templates/lib/systemd/system/vault.service
+      dest: /lib/systemd/system/vault.service
+      remote_src: no
+
+- name: Start and enable vault service
+  service:
+      name: vault.service
+      state: restarted
+      enabled: yes
+
+- name: Install vault autocomple
+  command: vault -autocomplete-install
+
+# export VAULT_ADDR=http://127.0.0.1:8200
+# vault operator init
+
+
