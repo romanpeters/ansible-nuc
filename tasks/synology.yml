@@ -1,0 +1,28 @@
+---
+- name: Install nfs-common
+  apt:
+    name: "nfs-common"
+    state: "present"
+
+- name: Create Synology directory
+  file:
+    path: /media/synology/{{ item }}
+    state: directory
+    owner: mediamanager
+    group: mediamanager
+    mode: 0775
+  with_items:
+    - "movies"
+    - "tvseries"
+    - "books"
+    - "documents"
+    - "photos"
+
+- name: Mount volumes
+  command: mount -t nfs {{ nas_ip }}:/volume1/{{ item }} /media/synology/{{ item }}
+  with_items:
+    - "movies"
+    - "tvseries"
+    - "books"
+    - "documents"
+    - "photos"
