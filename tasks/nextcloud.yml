@@ -78,20 +78,9 @@
 - name: Index files
   command: nextcloud.occ files:scan --all --no-interaction
 
-- name: Copy local changes watch script
-  template:
-    src: "templates/var/snap/nextcloud/watch.sh.j2"
-    dest: "/var/snap/nextcloud/watch.sh"
-
-- name: Copy nextcloud-watch service
-  copy:
-    src: "templates/lib/systemd/system/nextcloud-watch.service"
-    dest: "/lib/systemd/system/nextcloud-watch.service"
-    remote_src: no
-
-- name: Start and enable nextcloud-watch service
-  service:
-      name: nextcloud-watch.service
-      state: restarted
-      enabled: yes
-
+- name: Index cronjob
+  cron:
+    minute: 20
+    name: Index nextcloud files
+    user: root
+    job: nextcloud.occ files:scan --all --no-interaction
