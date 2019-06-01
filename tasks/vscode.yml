@@ -5,7 +5,7 @@
     image: codercom/code-server
     volumes:
       - /home/{{user}}/projects:/root/project
-      - /opt/homeassistant:/root/homeassistant
+      - /var/docker/homeassistant:/root/homeassistant
     env:
       HASS_SERVER: "{{ hass_url }}"
       HASS_TOKEN: "{{ hass_token }}"

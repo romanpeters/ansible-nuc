@@ -1,4 +1,9 @@
 ---
+- name: "install Python utilities"
+  apt:
+    name:
+      - "python-pip"
+
 - name: "install Python essentials"
   package:
     name: "{{ item }}"

@@ -4,7 +4,7 @@
     name: heimdall
     image: linuxserver/heimdall
     volumes:
-      - /opt/heimdall:/config
+      - /var/docker/heimdall:/config
     env:
       TZ: Europe/Amsterdam
       FORCE_HTTPS: "true"
@@ -15,4 +15,3 @@
     labels:
       traefik.port: "80"
       traefik.frontend.rule: "Host:heimdall.romanpeters.nl,start.romanpeters.nl"
-

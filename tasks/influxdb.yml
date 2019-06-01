@@ -9,7 +9,7 @@
     image: influxdb
     volumes:
       - /var/run/influxdb.sock:/var/run/influxdb.sock
-      - /opt/influxdb:/var/lib/influxdb
+      - /var/docker/influxdb:/var/lib/influxdb
     ports:
       - "8086:8086"
     networks:

@@ -1,16 +1,29 @@
 ---
-- name: "create E-Surveillant image"
-  command: docker build git@github.com:romanpeters/e-surveillant.git --tag e-surveillant:latest
+- name: "clone E-Surveillant repo"
+  git:
+    repo: git@github.com:romanpeters/e-surveillant.git
+    dest: /home/{{ user }}/projects/e-surveillant
+    accept_hostkey: "yes"
   become: "{{ user }}"
+
+  #- name: "build E-Surveillant image"
+  #  docker_image:
+  #    name: e-surveillant
+  #    build:
+  #      path: /home/{{ user }}/projects/e-surveillant
+  #    source: build
+
+- name: "create E-Surveillant image"
+  command: docker build /home/{{ user }}/projects/e-surveillant --tag e-surveillant:latest
 
 - name: "create E-Surveillant container"
   docker_container:
     name: e-surveillant
     image: e-surveillant:latest
     volumes:
-      - /opt/e-surveillant/client_secret.json:/app/client_secret.json
-      - /opt/e-surveillant/e-surveillant.json:/app/e-surveillant.json
-      - /opt/e-surveillant/flask_config.py:/app/flask_config.py
+      - /var/docker/e-surveillant/client_secret.json:/app/client_secret.json
+      - /var/docker/e-surveillant/e-surveillant.json:/app/e-surveillant.json
+      - /var/docker/e-surveillant/flask_config.py:/app/flask_config.py
     env:
       TZ: Europe/Amsterdam
     networks:
@@ -21,4 +34,4 @@
       traefik.port: "80"
       traefik.frontend.rule: "Host:e-surveillant.nl,www.e-surveillant.nl"
       traefik.frontend.passHostHeader: "true"
-      
+  become: "{{ user }}"   
