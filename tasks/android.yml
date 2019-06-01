@@ -1,0 +1,22 @@
+---
+- name: "create Android container"
+  docker_container:
+    name: android
+    image: budtmo/docker-android-x86-8.1
+    ports:
+      - "5554:5554"
+      - "5555:5555"
+    env:
+      DEVICE: "Nexus S"
+    networks:
+      - name: traefik_proxy
+    privileged: yes
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "6080"
+      traefik.backend: android
+      traefik.frontend.rule: "Host:android.romanpeters.nl"
+
+
+
