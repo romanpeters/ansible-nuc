@@ -1,0 +1,79 @@
+---
+- name: download caddy binary
+  unarchive:
+      src: https://caddyserver.com/download/linux/amd64?license=personal
+      dest: /usr/local/bin
+      mode: 0755
+      owner: www-data
+      group: root
+      remote_src: yes
+
+- name: set capabilities
+  capabilities:
+      path: /usr/local/bin/caddy
+      capability: cap_net_bind_service+ep
+      state: present
+
+- name: create etc directory
+  file:
+      path: /etc/caddy
+      state: directory
+      owner: root
+      group: www-data
+
+- name: copy Caddyfile
+  copy:
+      src: "templates{{ item }}"
+      dest: "{{ item }}"
+      remote_src: no
+  with_items:
+    - /etc/caddy/Caddyfile
+
+- name: create ssl directory
+  file:
+      path: /etc/ssl/caddy
+      state: directory
+      owner: www-data
+      group: root
+      mode: 0770
+
+- name: create /var/www/
+  file:
+      path: /var/www/
+      state: directory
+      owner: "{{ user }}"
+      group: www-data
+      mode: 0775
+
+- name: create caddy dir
+  file:
+      path: /var/www/caddy/
+      state: directory
+      owner: "{{ user }}"
+      group: www-data
+      mode: 0775
+
+- name: add index.html
+  copy:
+      src: "templates{{ item }}"
+      dest: "{{ item }}"
+      owner: www-data
+      group: root
+      mode: 0644
+  with_items:
+    - /var/www/caddy/index.html
+
+- name: create systemd service
+  template:
+      src: "templates{{ item }}"
+      dest: "{{ item }}"
+      owner: root
+      group: root
+  with_items:
+    - /lib/systemd/system/caddy.service
+
+- name: start and enable caddy service
+  service:
+      name: caddy.service
+      state: restarted
+      enabled: yes

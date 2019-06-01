@@ -1,0 +1,16 @@
+---
+- name: "create ESPHome container"
+  docker_container:
+    name: esphome
+    image: ottowinter/esphomeyaml
+    volumes:
+      - /var/docker/esphome:/config
+    ports:
+      - "6123:6123"
+#    devices:
+#      - /dev/ttyUSB0
+    restart_policy: always
+    restart: no
+    labels:
+      traefik.port: "6052"
+      traefik.frontend.rule: "Host:esphome.romanpeters.nl"

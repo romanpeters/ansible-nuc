@@ -1,0 +1,23 @@
+---
+- name: "create Radarr container"
+  docker_container:
+    name: radarr
+    image: linuxserver/radarr
+    volumes:
+      - /var/docker/radarr:/config
+      - /home/{{user}}/movies:/movies
+      - /home/{{user}}/downloads:/downloads
+    env:
+      PUID: '1080'
+      PGID: '1080'
+      TZ: Europe/Amsterdam
+    pid_mode: host
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "7878"
+      traefik.backend: radarr
+      traefik.frontend.rule: "Host:radarr.romanpeters.nl"
+

@@ -1,0 +1,14 @@
+---
+- name: "install unattended-upgrades"
+  apt:
+    name:
+      - "unattended-upgrades"
+
+- name: "configure unattended-upgrades"
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
+    with_items:
+      - "etc/apt/apt.conf.d/50unattended-upgrades"
+    notify:
+      - "systemctl daemon-reload"

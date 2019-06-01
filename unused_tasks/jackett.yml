@@ -1,0 +1,21 @@
+
+---
+- name: "create Jackett container"
+  docker_container:
+    name: jackett
+    image: linuxserver/jackett
+    volumes:
+      - /var/docker/jackett:/config
+      - /home/{{user}}/downloads:/downloads
+    env:
+      PUID: '1080'
+      PGID: '1080'
+      TZ: Europe/Amsterdam
+    networks:
+      - name: traefik_proxy
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "9117"
+      traefik.frontend.rule: "Host:jackett.romanpeters.nl"
+

@@ -1,0 +1,19 @@
+---
+- name: "create Syncthing container"
+  docker_container:
+    name: syncthing
+    image: linuxserver/syncthing
+    volumes:
+      - /var/docker/syncthing:/config
+      - /var/docker/homeassistant:/homeassistant
+      - /var/docker/zigbee2mqtt:/zigbee2mqtt
+      - /var/docker/minecraft:/minecraft
+    ports:
+      - "22000:22000"
+      - "21027:21027/udp"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.port: "8384"
+      traefik.frontend.rule: "Host:syncthing.romanpeters.nl"
+

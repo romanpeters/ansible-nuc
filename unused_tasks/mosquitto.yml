@@ -1,0 +1,24 @@
+---
+- name: "create Mosquitto container"
+  docker_container:
+    name: mosquitto
+    image: eclipse-mosquitto
+    volumes:
+      - /var/docker/mosquitto:/mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enable: "false"
+
+- name: allow access to port 1883
+  ufw:
+    comment: Mosquitto
+    rule: allow
+    port: 1883
+    src: "{{ item }}"
+  with_items:
+    - 10.10.10.0/24
+    - 172.17.0.0/24

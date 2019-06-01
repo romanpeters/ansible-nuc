@@ -1,0 +1,108 @@
+---
+- name: "make sure user exists, has SSH keys and is in the root group"
+  user:
+    name: "{{ user }}"
+    generate_ssh_key: yes
+    state: present
+    append: yes
+    groups:
+      - root
+      - audio
+
+- name: "make sure {{ user_2 }} exists"
+  user:
+    name: "{{ user_2 }}"
+    state: present
+
+- name: "create mediamanager group"
+  group:
+    name: mediamanager
+    gid: 1080
+    system: yes
+
+- name: "create mediamanager user"
+  user:
+    name: mediamanager
+    groups:
+      - mediamanager
+      - www-data
+    append: 'yes'
+    uid: 1080
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+
+- name: "create media directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "mediamanager"
+    mode: 0775
+  with_items:
+    - "/home/{{ user }}/downloads"
+    - "/home/{{ user }}/movies"
+    - "/home/{{ user }}/tvseries"
+    - "/home/{{ user }}/books"
+    - "/home/{{ user }}/documents"
+    - "/home/{{ user_2 }}/movies"
+    - "/home/{{ user_2 }}/tvseries"
+
+- name: "create home directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  with_items:
+    - "/home/{{ user }}/projects"
+
+# zsh
+- name: "install zsh"
+  apt:
+    name: "zsh"
+    state: "present"
+
+- name: "clone oh-my-zsh repo"
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: "/home/{{ user }}/.oh-my-zsh"
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Clone zsh-autosuggestions repo
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions.git
+    dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+  become: yes
+  become_user: "{{ user }}"
+  
+
+- name: Adding .zshrc file
+  template:
+    src: ".zshrc"
+    dest: "/home/{{ user }}/.zshrc"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    backup: "yes"
+
+- name: Set zsh as default shell
+  user:
+    name: "{{ user }}"
+    shell: /bin/zsh
+
+# nano
+- name: "clone nanorc repo"
+  git:
+    repo: https://github.com/scopatz/nanorc.git
+    dest: "/home/{{ user }}/.nano"
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Adding .nanorc file
+  template:
+    src: ".nanorc"
+    dest: "/home/{{ user }}/.nanorc"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
