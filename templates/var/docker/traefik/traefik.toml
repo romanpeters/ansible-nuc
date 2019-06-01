@@ -52,6 +52,11 @@ filePath = "/var/log/traefik/access.log"
     [frontends.frontend-pi-hole-romanpeters-nl.routes.test_1]
     rule = "Host: pi-hole.romanpeters.nl"
 
+  [frontends.frontend-vault-romanpeters-nl]
+  backend = "backend-vault"
+    [frontends.frontend-vault-romanpeters-nl.routes.test_1]
+    rule = "Host: vault.romanpeters.nl"
+
 [backends]
   [backends.backend-synology]
     [backends.backend-synology.servers.server1]
@@ -64,6 +69,10 @@ filePath = "/var/log/traefik/access.log"
   [backends.backend-pi-hole]
     [backends.backend-pi-hole.servers.server1]
     url = "http://10.10.10.101"
+
+  [backends.backend-vault]
+    [backends.backend-vault.servers.server1]
+    url = "http://10.10.10.20:8200/ui"
 
 [acme]
 email = "traefik@romanpeters.nl"
