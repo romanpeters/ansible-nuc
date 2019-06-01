@@ -1,0 +1,162 @@
+version: '2.1'
+
+services:
+  plex:
+    image: linuxserver/plex:latest
+    container_name: plex
+    networks:
+      - traefik_proxy
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+      - VERSION=docker
+# # Only needed for claiming
+#    ports:
+#      - 32400:32400
+    volumes:
+      - /media/synology/movies:/data/movies
+      - /media/synology/tvseries:/data/tvshows
+      - /var/docker/plex/config/:/config
+      - /tmp/transcode/:/transcode
+    devices:
+      - /dev/dri:/dev/dri
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=plex"
+      - "traefik.docker.network=traefik_proxy"
+      - "traefik.frontend.rule=Host:plex.{{ url_host }}"
+      - "traefik.port=32400"
+    depends_on:
+      - transmission
+      - sonarr
+      - radarr
+
+  tautulli:
+    image: linuxserver/tautulli:latest
+    container_name: tautulli
+    networks:
+      - traefik_proxy
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /var/docker/tautulli:/config
+      - /var/docker/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=tautulli"
+      - "traefik.frontend.rule=Host:tautulli.{{ url_host }}"
+      - "traefik.port=8181"
+      - "traefik.docker.network=traefik_proxy"
+    depends_on:
+      - plex
+
+  transmission:
+    image: linuxserver/transmission:latest
+    container_name: transmission
+    networks:
+      - traefik_proxy
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /var/docker/transmission/config/:/config
+      - /var/docker/transmission/downloads/:/downloads
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=transmission"
+      - "traefik.frontend.rule=Host:transmission.{{ url_host }}"
+      - "traefik.port=9091"
+      - "traefik.docker.network=traefik_proxy"
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    networks:
+      - traefik_proxy
+    volumes:
+      - /dev/rtc:/dev/rtc:ro
+      - /media/synology/tvseries:/tv
+      - /var/docker/sonarr/config:/config
+      - /var/docker/transmission/downloads/:/downloads
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=sonarr"
+      - "traefik.frontend.rule=Host:sonarr.{{ url_host }}"
+      - "traefik.port=8989"
+      - "traefik.docker.network=traefik_proxy"
+    depends_on:
+      - transmission
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    networks:
+      - traefik_proxy
+    volumes:
+      - /dev/rtc:/dev/rtc:ro
+      - /media/synology/movies:/movies
+      - /var/docker/radarr/config:/config
+      - /var/docker/transmission/downloads/:/downloads
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=radarr"
+      - "traefik.frontend.rule=Host:radarr.{{ url_host }}"
+      - "traefik.port=7878"
+      - "traefik.docker.network=traefik_proxy"
+    depends_on:
+      - transmission
+
+  jackett:
+    image: linuxserver/jackett:latest
+    container_name: jackett
+    networks:
+      - traefik_proxy
+    volumes:
+      - /var/docker/jackett/config/:/config
+      - /var/docker/transmission/downloads/:/downloads
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=jackett"
+      - "traefik.frontend.rule=Host:jackett.{{ url_host }}"
+      - "traefik.port=9117"
+      - "traefik.docker.network=traefik_proxy"
+
+  letterboxd:
+    build: https://github.com/romanpeters/letterboxd-watchlist-rss.git
+    container_name: letterboxd-watchlist
+    networks:
+      - traefik_proxy
+    environment:
+      - LETTERBOXD_USER={{ user }}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:letterboxd-watchlist.{{ url_host }}"
+      - "traefik.port=5000"
+      - "traefik.docker.network=traefik_proxy"
+
+networks:
+  traefik_proxy:
+    external: true
