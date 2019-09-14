@@ -4,30 +4,24 @@ services:
   plex:
     image: linuxserver/plex:latest
     container_name: plex
-    networks:
-      - traefik_proxy
+    network_mode: host
     environment:
       - PUID=1080
       - PGID=1080
       - TZ=Europe/Amsterdam
       - VERSION=docker
-# # Only needed for claiming
-#    ports:
-#      - 32400:32400
+    ports:
+      - 32400:32400
     volumes:
       - /media/synology/movies:/data/movies
       - /media/synology/tvseries:/data/tvshows
       - /var/docker/plex/config/:/config
-      - /tmp/transcode/:/transcode
+      - /tmp:/transcode
     devices:
       - /dev/dri:/dev/dri
     restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=plex"
-      - "traefik.docker.network=traefik_proxy"
-      - "traefik.frontend.rule=Host:plex.{{ url_host }}"
-      - "traefik.port=32400"
+      - "traefik.enable=false"
     depends_on:
       - transmission
       - sonarr
@@ -96,6 +90,7 @@ services:
       - "traefik.frontend.rule=Host:sonarr.{{ url_host }}"
       - "traefik.port=8989"
       - "traefik.docker.network=traefik_proxy"
+      - "traefik.frontend.auth.basic.users=romanpeters:$$apr1$$iMEzu6Tq$$7C655jttFu6PbtSR7jQJU/,tanlambrechtsen:$$apr1$$Ej1QoBY6$$Q9wyRxVinbs9V7WvRrOBN."
     depends_on:
       - transmission
 
@@ -120,6 +115,7 @@ services:
       - "traefik.frontend.rule=Host:radarr.{{ url_host }}"
       - "traefik.port=7878"
       - "traefik.docker.network=traefik_proxy"
+      - "traefik.frontend.auth.basic.users=romanpeters:$$apr1$$iMEzu6Tq$$7C655jttFu6PbtSR7jQJU/,tanlambrechtsen:$$apr1$$Ej1QoBY6$$Q9wyRxVinbs9V7WvRrOBN."
     depends_on:
       - transmission
 
@@ -143,9 +139,31 @@ services:
       - "traefik.port=9117"
       - "traefik.docker.network=traefik_proxy"
 
+  bazarr:
+    image: linuxserver/bazarr:latest
+    container_name: bazarr
+    networks:
+      - traefik_proxy
+    volumes:
+      - /var/docker/bazarr/config/:/config
+      - /media/synology/movies:/movies
+      - /media/synology/tvseries:/tv
+
+    environment:
+      - PUID=1080
+      - PGID=1080
+      - TZ=Europe/Amsterdam
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=bazarr"
+      - "traefik.frontend.rule=Host:bazarr.{{ url_host }}"
+      - "traefik.port=6767"
+      - "traefik.docker.network=traefik_proxy"
+
   letterboxd:
     build: https://github.com/romanpeters/letterboxd-watchlist-rss.git
-    container_name: letterboxd-watchlist
+    container_name: letterboxd
     networks:
       - traefik_proxy
     environment:
