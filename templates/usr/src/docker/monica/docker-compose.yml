@@ -3,17 +3,19 @@ version: "3.4"
 services:
   monicahq:
     image: monicahq/monicahq
+    container_name: monica
     depends_on:
       - mysql
     env_file: .env
     volumes:
-      - /opt/monica/storage:/var/www/monica/storage
+      - /var/docker/monica/storage:/var/www/monica/storage
     restart: always
     ports:
       - "3041:80"
     labels:
       - "traefik.port=80"
       - "traefik.frontend.rule=Host:monica.romanpeters.nl"
+      - "traefik.docker.network=traefik_proxy"
       - "traefik.http.frontend.headers.customFrameOptionsValue=ALLOW-FROM https://monica.romanpeters.nl"
     networks:
       - internal
@@ -21,13 +23,14 @@ services:
 
   mysql:
     image: mysql:5.7
+    container_name: mysql_monica
     environment:
       - MYSQL_ROOT_PASSWORD=sekret_root_password
       - MYSQL_DATABASE=monica
       - MYSQL_USER=homestead
       - MYSQL_PASSWORD=secret
     volumes:
-      - /opt/monica/mysql:/var/lib/mysql
+      - /var/docker/monica/mysql:/var/lib/mysql
     restart: always
     labels:
       - "traefik.enable=false"

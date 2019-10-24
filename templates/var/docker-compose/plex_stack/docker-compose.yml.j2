@@ -83,6 +83,9 @@ services:
       - PUID=1080
       - PGID=1080
       - TZ=Europe/Amsterdam
+    # ports for local unauthenticated communication
+    ports:
+      - 8989:8989
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -108,6 +111,9 @@ services:
       - PUID=1080
       - PGID=1080
       - TZ=Europe/Amsterdam
+    # ports for local unauthenticated communication
+    ports:
+      - 7878:7878
     restart: unless-stopped
     labels:
       - "traefik.enable=true"

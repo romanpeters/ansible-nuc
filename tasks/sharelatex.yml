@@ -1,17 +1,14 @@
 ---
-- name: "clone sharelatex repo"
-  git:
-    repo: https://github.com/sharelatex/sharelatex
-    dest: "/usr/src/docker/sharelatex"
-    force: "yes"
+- name: Create docker-compose plex stack dir
+  file:
+    path: /var/docker-compose/sharelatex
+    state: directory
 
-- name: "copy sharelatex docker-compose"
+- name: Copy sharelatex docker-compose
   template:
-    src: "templates{{ item }}"
-    dest: "{{ item }}"
-  with_items:
-    - "/usr/src/docker/sharelatex/docker-compose.yml"
+    src: templates/var/docker-compose/sharelatex/docker-compose.yml
+    dest: /var/docker-compose/sharelatex/docker-compose.yml
 
-- name: "compose up sharelatex"
+- name: Compose up sharelatex
   docker_service:
-    project_src: "/usr/src/docker/sharelatex"
+    project_src: /var/docker-compose/sharelatex

@@ -38,7 +38,7 @@
     env:
       EULA: "TRUE"
       MEMORY: "10G"
-      VERSION: "1.14.2"
+      #      VERSION: "1.14.3"
       ENABLE_RCON: "true"
       SEED: "-21937183521"
       WHITELIST: "ElectricMonkey,Don_Deco"

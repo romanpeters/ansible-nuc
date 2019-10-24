@@ -54,6 +54,7 @@
     - "Books"
     - "Documents"
     - "Photos"
+    - "Projects"
 
 - name: Mount home directory
   command: mount --bind {{ item.src }} /media/nextcloud/data/{{ user }}/files/{{ item.dest }}
@@ -63,6 +64,7 @@
     - { src: "/media/synology/books", dest: "Books" }
     - { src: "/media/synology/documents", dest: "Documents" }
     - { src: "/media/synology/photos", dest: "Photos" }
+    - { src: "/home/{{ user }}/projects", dest: "Projects"}
     
     
 - name: Change data directory configuration

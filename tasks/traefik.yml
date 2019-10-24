@@ -36,6 +36,9 @@
     env:
       TRANSIP_ACCOUNT_NAME: "{{ user }}"
       TRANSIP_PRIVATE_KEY_PATH: "/certs/transip"
+      CF_API_EMAIL: "{{ cf_email }}"
+      CF_API_KEY: "{{ cf_key }}"
+
     networks:
       - name: traefik_proxy
         ipv4_address: 172.1.1.1

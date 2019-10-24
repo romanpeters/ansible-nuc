@@ -57,6 +57,16 @@ filePath = "/var/log/traefik/access.log"
     [frontends.frontend-vault-romanpeters-nl.routes.test_1]
     rule = "Host: vault.romanpeters.nl"
 
+  [frontends.frontend-plex-romanpeters-nl]
+  backend = "backend-plex"
+    [frontends.frontend-plex-romanpeters-nl.routes.test_1]
+    rule = "Host: plex.romanpeters.nl"
+
+  [frontends.frontend-home-romanpeters-nl]
+  backend = "backend-home"
+    [frontends.frontend-home-romanpeters-nl.routes.test_1]
+    rule = "Host: home.romanpeters.nl"
+
 [backends]
   [backends.backend-synology]
     [backends.backend-synology.servers.server1]
@@ -74,21 +84,31 @@ filePath = "/var/log/traefik/access.log"
     [backends.backend-vault.servers.server1]
     url = "http://10.10.10.20:8200/ui"
 
+  [backends.backend-plex]
+    [backends.backend-plex.servers.server1]
+    url = "http://10.10.10.20:32400"
+
+  [backends.backend-home]
+    [backends.backend-home.servers.server1]
+    url = "http://10.10.10.20:8123"
+
 [acme]
 email = "traefik@romanpeters.nl"
 storage = "acme.json"
 caServer = "https://acme-v02.api.letsencrypt.org/directory"
 #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
 entryPoint = "https"
-#  [acme.dnsChallenge]
-#  provider = "transip"
-  [acme.httpChallenge]
-  entryPoint = "http"
+  [acme.dnsChallenge]
+  provider = "cloudflare"
+  resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
+#  [acme.httpChallenge]
+#  entryPoint = "http"
 
 [[acme.domains]]
-#  main = "*.romanpeters.nl"
-  main = "romanpeters.nl"
-  sans = ["files.romanpeters.nl", "plex.romanpeters.nl", "home.romanpeters.nl"]
+  main = "*.romanpeters.nl"
+  sans = ["romanpeters.nl"]
+#  main = "romanpeters.nl"
+#  sans = ["files.romanpeters.nl", "home.romanpeters.nl", "glances.romanpeters.nl", "sharelatex.romanpeters.nl", "radarr.romanpeters.nl", "sonarr.romanpeters.nl", "start.romanpeters.nl"]
 
 [[acme.domains]]
   main = "e-surveillant.nl"

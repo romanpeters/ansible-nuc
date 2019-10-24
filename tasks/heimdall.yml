@@ -15,3 +15,5 @@
     labels:
       traefik.port: "80"
       traefik.frontend.rule: "Host:heimdall.romanpeters.nl,start.romanpeters.nl"
+      traefik.frontend.auth.basic.users: "romanpeters:$apr1$iMEzu6Tq$7C655jttFu6PbtSR7jQJU/,tanlambrechtsen:$apr1$Ej1QoBY6$Q9wyRxVinbs9V7WvRrOBN."
+
