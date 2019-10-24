@@ -1,16 +1,88 @@
 ---
-- name: "create nextcloud directories"
+- name: Install nextcloud
+  snap:
+    name: nextcloud
+
+- name: Ensure snap started
+  command: snap start nextcloud
+
+- name: Configure account
+  command: nextcloud.manual-install {{ user }} {{ nextcloud_password }}
+
+- name: Set port number
+  command: snap set nextcloud ports.http=1452
+
+- name: Add domain
+  command: nextcloud.occ config:system:set trusted_domains 1 --value=files.{{ url_host }}
+
+- name: Enable /mount
+  command: snap connect nextcloud:removable-media  
+
+- name: Stop snap
+  command: snap stop nextcloud
+
+- name: Create new data dir
   file:
-    path: "/usr/src/docker/nextcloud"
+    path: /mount/nextcloud
     state: directory
+    mode: 0770
 
-- name: "copy nextcloud docker-compose"
-  template:
-    src: "templates{{ item }}.j2"
-    dest: "{{ item }}"
+- name: Remove example data
+  file:
+    path: /var/snap/nextcloud/common/nextcloud/data/{{ user }}/files/{{ item }}
+    state: absent
   with_items:
-    - "/usr/src/docker/nextcloud/docker-compose.yml"
+    - 'Documents'
+    - 'Nextcloud Manual.pdf'
+    - 'Nextcloud.png'
+    - 'Nextcloud.mp4'
+    - 'Photos'
 
-- name: "compose up nextcloud"
-  docker_service:
-    project_src: "/usr/src/docker/nextcloud"
+- name: Copy data directory
+  synchronize:
+    src: /var/snap/nextcloud/common/nextcloud/data
+    dest: /media/nextcloud/
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Create volume directories
+  file:
+    path: /media/nextcloud/data/{{ user }}/files/{{ item }}
+    state: directory
+  with_items:
+    - "TV Series"
+    - "Movies"
+    - "Books"
+    - "Documents"
+    - "Photos"
+    - "Projects"
+
+- name: Mount home directory
+  command: mount --bind {{ item.src }} /media/nextcloud/data/{{ user }}/files/{{ item.dest }}
+  with_items:
+    - { src: "/media/synology/tvseries", dest: "'TV Series'" } 
+    - { src: "/media/synology/movies", dest: "Movies" }
+    - { src: "/media/synology/books", dest: "Books" }
+    - { src: "/media/synology/documents", dest: "Documents" }
+    - { src: "/media/synology/photos", dest: "Photos" }
+    - { src: "/home/{{ user }}/projects", dest: "Projects"}
+    
+    
+- name: Change data directory configuration
+  lineinfile:
+    path: /var/snap/nextcloud/current/nextcloud/config/config.php
+    regexp: "^(.*)'datadirectory' => '/var/snap/nextcloud/common/nextcloud/data',(.*)$"
+    line: "'datadirectory' => '/media/nextcloud/data',"
+    backrefs: 'yes'
+
+- name: Start snap
+  command: snap start nextcloud
+
+- name: Index files
+  command: nextcloud.occ files:scan --all --no-interaction
+
+- name: Index cronjob
+  cron:
+    minute: 20
+    name: Index nextcloud files
+    user: root
+    job: nextcloud.occ files:scan --all --no-interaction

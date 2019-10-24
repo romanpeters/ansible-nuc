@@ -4,7 +4,7 @@
     name: zigbee2mqtt
     image: koenkk/zigbee2mqtt
     volumes:
-      - /opt/zigbee2mqtt:/app/data
+      - /var/docker/zigbee2mqtt:/app/data
     devices:
       - /dev/ttyACM0
     networks:  # for mqtt

@@ -4,7 +4,7 @@
   become: true
   become_user: "root"
   become_method: "sudo"
-  gather_facts: no
+  gather_facts: yes
 
   handlers:
     - import_tasks: "handlers/main.yml"
@@ -17,116 +17,61 @@
     - name: "system"
       include_tasks: "tasks/system.yml"
 
-    - name: "git"
-      include_tasks: "tasks/git.yml"
+    - name: "packages"
+      include_tasks: "tasks/packages.yml"
 
     - name: "user"
       include_tasks: "tasks/user.yml"
 
-    - name: "packages"
-      include_tasks: "tasks/packages.yml"
+    - name: "sshd"
+      include_tasks: "tasks/ssh.yml"
 
     - name: "python"
       include_tasks: "tasks/python.yml"
 
-    - name: "sshd"
-      include_tasks: "tasks/ssh.yml"
-
-    - name: "rsnaphsot"
-      include_tasks: "tasks/rsnapshot.yml"
-
-    - name: "ufw"
-      include_tasks: "tasks/ufw.yml"
-
-    - name: "samba"
-      include_tasks: "tasks/samba.yml"
-
-    - name: "caddy"
-      include_tasks: "tasks/caddy.yml"
-
     - name: "docker"
       include_tasks: "tasks/docker.yml"
 
-    - name: "portainer"
-      include_tasks: "tasks/portainer.yml"
+    - name: "git"
+      include_tasks: "tasks/git.yml"
 
+    - name: "zsh"
+      include_tasks: "tasks/zsh.yml"
+
+- hosts: "nuc"
+  remote_user: "{{ user }}"
+  become: true
+  become_user: "root"
+  become_method: "sudo"
+  gather_facts: yes
+
+  tasks:
     - name: "traefik"
       include_tasks: "tasks/traefik.yml"
 
-    - name: "glances"
-      include_tasks: "tasks/glances.yml"
-
-    - name: "syncthing"
-      include_tasks: "tasks/syncthing.yml"
-
-    - name: "watchtower"
-      include_tasks: "tasks/watchtower.yml"
-
-    - name: "mosquitto"
-      include_tasks: "tasks/mosquitto.yml"
-
-    - name: "mariaDB"
-      include_tasks: "tasks/mariadb.yml"
-
-    - name: "influxdb"
-      include_tasks: "tasks/influxdb.yml"
-
-    - name: "grafana"
-      include_tasks: "tasks/grafana.yml"
-
-    - name: "telegraf"
-      include_tasks: "tasks/telegraf"
-
-    - name: "transmission"
-      include_tasks: "tasks/transmission.yml"
-
-    - name: "plex"
-      include_tasks: "tasks/plex.yml"
-
-    - name: "jackett"
-      include_tasks: "tasks/jackett"
-
-    - name: "radarr"
-      include_tasks: "tasks/radarr.yml"
-
-    - name: "sonarr"
-      include_tasks: "tasks/sonarr.yml"
-
-    - name: "letterboxd-watchlist"
-      include_tasks: "tasks/letterboxd-watchlist.yml"
-
-    - name: "minecraft"
-      include_tasks: "tasks/minecraft.yml"
-
-    - name: "home assistant"
-      include_tasks: "tasks/homeassistant.yml"
-
-    - name: "ha-dockermon"
-      include_tasks: "tasks/ha-dockermon.yml"
-
-    - name: "homebridge"
-      include_tasks: "tasks/homebridge.yml"
-
-    - name: "esphome container"
-      include_tasks: "tasks/esphome.yml"
-
-    - name: "zigbee2mqtt"
-      include_tasks: "tasks/zigbee2mqtt.yml"
-
-    - name: "vscode"
-      include_tasks: "tasks/vscode.yml"
-
-    - name: "calibre-web"
-      include_tasks: "tasks/calibre-web.yml"
-
-    - name: "e-surveillant"
-      include_tasks: "tasks/e-surveillant.yml"
+    - name: "synology"
+      include_tasks: "tasks/synology.yml"
 
     - name: "nextcloud"
       include_tasks: "tasks/nextcloud.yml"
 
-    - name: "monica"
-      include_tasks: "tasks/monica.yml"
+    - name: "e-surveillant"
+      include_tasks: "tasks/e-surveillant.yml"
 
-    - name: "sharelatex"
-      include_tasks: "tasks/sharelatex.yml"
+    - name: "devops"
+      include_tasks: "tasks/devops.yml"
+
+    - name: "portainer"
+      include_tasks: "tasks/portainer.yml"
+
+    - name: "minecraft"
+      include_tasks: "tasks/minecraft.yml"
+
+    - name: "home stack"
+      include_tasks: "tasks/home_stack.yml"
+
+    - name: "plex stack"
+      include_tasks: "tasks/plex_stack.yml"
+
+
+

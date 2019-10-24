@@ -1,0 +1,24 @@
+---
+- name: "create Wordpress container"
+  docker_container:
+    name: moora.nl
+    image: wordpress:latest
+    network_mode: host
+    volumes:
+      - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock:ro
+    env:
+      WORDPRESS_DB_HOST: localhost:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress   
+      TZ: Europe/Amsterdam
+    restart_policy: always
+    restart: yes
+    ports:
+      - "8800:80"
+    labels:
+      traefik.enabled: "false"
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:moora.nl,www.moora.nl"
+
+

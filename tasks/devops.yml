@@ -21,7 +21,7 @@
     name: "devopsmatrix"
     image: matrixdotorg/synapse
     volumes:
-      - "/opt/devops/matrix/:/data"
+      - "/var/docker/devops/matrix/:/data"
     env:
       SYNAPSE_SERVER_NAME: "matrix.devops-utrecht.nl"
       SYNAPSE_REPORT_STATS: "yes"

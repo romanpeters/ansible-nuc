@@ -25,6 +25,8 @@ defaultEntryPoints = ["http", "https"]
   endpoint = "unix:///var/run/docker.sock"
   domain = "romanpeters.nl"
   watch = true
+  passHostHeader = true
+
 
 [traefikLog]
 filePath = "/var/log/traefik/traefik.log"
@@ -34,60 +36,61 @@ filePath = "/var/log/traefik/access.log"
 
 [file]
 [frontends]
-  [frontends.frontend-landingpage-romanpeters-nl]
-  backend = "backend-landingpage"
-    [frontends.frontend-landingpage-romanpeters-nl.routes.test_1]
-    rule = "Host: landingpage.romanpeters.nl"
-
-  [frontends.frontend-home-romanpeters-nl]
-  backend = "backend-home-assistant"
-    [frontends.frontend-home-romanpeters-nl.routes.test_1]
-    rule = "Host: home.romanpeters.nl"
-
-  [frontends.frontend-plex-romanpeters-nl]
-  backend = "backend-plex"
-    [frontends.frontend-plex-romanpeters-nl.routes.test_1]
-    rule = "Host: plex.romanpeters.nl"
-
   [frontends.frontend-synology-romanpeters-nl]
   backend = "backend-synology"
     [frontends.frontend-synology-romanpeters-nl.routes.test_1]
     rule = "Host: synology.romanpeters.nl"
 
-  [frontends.frontend-homebridge-romanpeters-nl]
-  backend = "backend-homebridge"
-    [frontends.frontend-homebridge-romanpeters-nl.routes.test_1]
-    rule = "Host: homebridge.romanpeters.nl"
+  [frontends.frontend-nextcloud-romanpeters-nl]
+  backend = "backend-nextcloud"
+  passHostHeader = true
+    [frontends.frontend-nextcloud-romanpeters-nl.routes.test_1]
+    rule = "Host: files.romanpeters.nl"
 
   [frontends.frontend-pi-hole-romanpeters-nl]
   backend = "backend-pi-hole"
     [frontends.frontend-pi-hole-romanpeters-nl.routes.test_1]
     rule = "Host: pi-hole.romanpeters.nl"
 
-[backends]
-  [backends.backend-landingpage]
-    [backends.backend-landingpage.servers.server1]
-    url = "http://10.10.10.20:5001"
+  [frontends.frontend-vault-romanpeters-nl]
+  backend = "backend-vault"
+    [frontends.frontend-vault-romanpeters-nl.routes.test_1]
+    rule = "Host: vault.romanpeters.nl"
 
-  [backends.backend-home-assistant]
-    [backends.backend-home-assistant.servers.server1]
-    url = "http://10.10.10.20:8123"
+  [frontends.frontend-plex-romanpeters-nl]
+  backend = "backend-plex"
+    [frontends.frontend-plex-romanpeters-nl.routes.test_1]
+    rule = "Host: plex.romanpeters.nl"
+
+  [frontends.frontend-home-romanpeters-nl]
+  backend = "backend-home"
+    [frontends.frontend-home-romanpeters-nl.routes.test_1]
+    rule = "Host: home.romanpeters.nl"
+
+[backends]
+  [backends.backend-synology]
+    [backends.backend-synology.servers.server1]
+    url = "http://10.10.10.100:3998"
+
+  [backends.backend-nextcloud]
+    [backends.backend-nextcloud.servers.server1]
+    url = "http://10.10.10.20:1452"
+
+  [backends.backend-pi-hole]
+    [backends.backend-pi-hole.servers.server1]
+    url = "http://10.10.10.101"
+
+  [backends.backend-vault]
+    [backends.backend-vault.servers.server1]
+    url = "http://10.10.10.20:8200/ui"
 
   [backends.backend-plex]
     [backends.backend-plex.servers.server1]
     url = "http://10.10.10.20:32400"
 
-  [backends.backend-synology]
-    [backends.backend-synology.servers.server1]
-    url = "http://10.10.10.100:3998"
-
-  [backends.backend-homebridge]
-    [backends.backend-homebridge.servers.server1]
-    url = "http://10.10.10.20:8780"
-
-  [backends.backend-pi-hole]
-    [backends.backend-pi-hole.servers.server1]
-    url = "http://10.10.10.101"
+  [backends.backend-home]
+    [backends.backend-home.servers.server1]
+    url = "http://10.10.10.20:8123"
 
 [acme]
 email = "traefik@romanpeters.nl"
@@ -96,15 +99,21 @@ caServer = "https://acme-v02.api.letsencrypt.org/directory"
 #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
 entryPoint = "https"
   [acme.dnsChallenge]
-  provider = "transip"
-  
+  provider = "cloudflare"
+  resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
+#  [acme.httpChallenge]
+#  entryPoint = "http"
 
 [[acme.domains]]
   main = "*.romanpeters.nl"
+  sans = ["romanpeters.nl"]
+#  main = "romanpeters.nl"
+#  sans = ["files.romanpeters.nl", "home.romanpeters.nl", "glances.romanpeters.nl", "sharelatex.romanpeters.nl", "radarr.romanpeters.nl", "sonarr.romanpeters.nl", "start.romanpeters.nl"]
 
 [[acme.domains]]
   main = "e-surveillant.nl"
   sans = ["www.e-surveillant.nl"]
 
 [[acme.domains]]
-  main = "*.devops-utrecht.nl"
+#  main = "*.devops-utrecht.nl"
+  main = "devops-utrecht.nl"

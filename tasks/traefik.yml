@@ -1,13 +1,13 @@
 ---
 - name: "create Traefik directory"
   file:
-    path: /opt/traefik/
+    path: /var/docker/traefik/
     state: directory
     mode: 0755    
 
 - name: "create acme.json"
   file:
-    path: /opt/traefik/acme.json
+    path: /var/docker/traefik/acme.json
     state: touch
     mode: 0600
 
@@ -17,12 +17,14 @@
     src: "templates{{ item }}"
     dest: "{{ item }}"
   with_items:
-    - "/opt/traefik/traefik.toml"
+    - "/var/docker/traefik/traefik.toml"
 
 
 - name: "create Docker network"
   docker_network:
     name: traefik_proxy
+    ipam_options:
+      subnet: '172.1.1.1/16'
 
 - name: "create Traefik container"
   docker_container:
@@ -34,14 +36,18 @@
     env:
       TRANSIP_ACCOUNT_NAME: "{{ user }}"
       TRANSIP_PRIVATE_KEY_PATH: "/certs/transip"
+      CF_API_EMAIL: "{{ cf_email }}"
+      CF_API_KEY: "{{ cf_key }}"
+
     networks:
       - name: traefik_proxy
+        ipv4_address: 172.1.1.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/traefik/traefik.toml:/traefik.toml
-      - /opt/traefik/certs/:/certs/
-      - /opt/traefik/acme.json:/acme.json
-      - /opt/traefik/logs:/var/log/traefik/
+      - /var/docker/traefik/traefik.toml:/traefik.toml
+      - /var/docker/traefik/certs/:/certs/
+      - /var/docker/traefik/acme.json:/acme.json
+      - /var/docker/traefik/logs:/var/log/traefik/
     labels:
       traefik.port: "8080"
       traefik.frontend.rule: "Host:traefik.romanpeters.nl"

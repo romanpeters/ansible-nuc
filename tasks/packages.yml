@@ -1,10 +1,14 @@
 ---
 # Needed because of Ansible issue #25414
 - name: "check if unattended-upgrades is not in progress"
-  shell:
-    "while fuser /var/lib/dpkg/lock; do sleep 1; done;"
+  shell: "while fuser /var/lib/dpkg/lock; do sleep 1; done;"
   become: true
   changed_when: false
+
+- name: "upgrade packages"
+  apt:
+    upgrade: "yes"
+    update_cache: true
 
 - name: "install common utilities"
   apt:
@@ -13,44 +17,21 @@
       - "htop"
       - "tmux"
       - "grc"
-#      - "unattended-upgrades"
-      - "fail2ban"
       - "haveged"
       - "tree"
-      - "bluetooth"
+      - "bluez"
+#      - "inotify-tools"
+#      - "bluetooth"
       - "trash-cli"
-      - "software-properties-common"
-      - "sl"
-      - "nfs-common"
+      - "unzip"
+      - "lolcat"
+        #      - "software-properties-common"
+        #      - "sl"
     state: "present"
 
-- name: "install Python utilities"
-  apt:
-    name:
-      - "python-pip"
+    #    apt:
+    #    name:
+    #      - apt-transport-https
+    #      - ca-certificates
 
-- name: "install apt SSL utilities"
-  apt:
-    name:
-      - apt-transport-https
-      - ca-certificates
 
-- name: "upgrade packages"
-  apt:
-    upgrade: "yes"
-    update_cache: true
-
-- name: "ensure fail2ban auto-start"
-  service:
-    name: fail2ban
-    state: started
-    enabled: "yes"
-
-- name: "configure unattended-upgrades"
-  template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
-  with_items:
-    - "etc/apt/apt.conf.d/50unattended-upgrades"
-  notify:
-    - "systemctl daemon-reload"

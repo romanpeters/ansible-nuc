@@ -5,7 +5,7 @@
     image: portainer/portainer
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/portainer:/data
+      - /var/docker/portainer:/data
     restart_policy: always
     restart: yes
     labels:

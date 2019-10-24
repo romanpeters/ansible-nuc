@@ -1,0 +1,19 @@
+#!/bin/sh
+  
+FILES_PATH='/media/nextcloud/data/{{ user }}/files'  # path to watch
+PREFIX='/media/nextcloud/data'
+echo $FILES_PATH
+
+inotifywait -mr --timefmt '%d/%m/%y %H:%M' --format '%T %w %f %e' $FILES_PATH \
+        -e create -e modify -e delete | while read date time dir file event; do
+    FILECHANGE=${dir}${file}
+    FILECHANGE_SNAP=${FILECHANGE#"$PREFIX"}
+    if [ ${event} = "DELETE" ]  # Index the parent dir instead of the (deleted) file
+    then
+        FILECHANGE_SNAP=${FILECHANGE_SNAP%"$file"}
+    fi
+
+    echo "${time}  ${date}: ${event} ${FILECHANGE_SNAP}" \
+            && sudo nextcloud.occ files:scan --no-interaction --no-ansi --path=$FILECHANGE_SNAP
+done
+

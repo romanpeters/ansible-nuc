@@ -1,0 +1,37 @@
+---
+- name: Install extra Home Assistant deps
+  apt:
+    name:
+      - ffmpeg
+      - vlc
+
+- name: Ensure projects dir exists
+  file:
+    path: /home/{{ user }}/projects
+    state: directory
+
+- name: Clone Home Assistant configuration from Github
+  git:
+    repo: https://github.com/romanpeters/home-assistant.git
+    dest: /home/{{ user }}/projects/homeassistant
+    accept_hostkey: yes
+  ignore_errors: True
+
+- name: copy zigbee2mqtt configuration
+  template:
+    src: templates/var/docker/zigbee2mqtt/configuration.yaml
+    dest: /var/docker/zigbee2mqtt/configuration.yaml
+
+- name: Create docker-compose home stack dir
+  file:
+    path: "/var/docker-compose/home_stack"
+    state: directory
+
+- name: "copy media docker-compose"
+  template:
+    src: "templates/var/docker-compose/home_stack/docker-compose.yml.j2"
+    dest: "/var/docker-compose/home_stack/docker-compose.yml"
+
+- name: "compose up home stack"
+  docker_compose:
+    project_src: "/var/docker-compose/home_stack"

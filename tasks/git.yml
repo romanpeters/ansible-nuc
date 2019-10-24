@@ -1,16 +1,16 @@
 ---
-#- name: "install git"
-#  package:
-#    name: "{{ item }}"
-#    state: "latest"
-#  with_items:
-#    - "git"
+- name: "install git"
+  package:
+    name: "{{ item }}"
+    state: "latest"
+  with_items:
+    - "git"
 
-#- name: "set git email"
-#  command: "git config --global user.email '{{ new_user_email }}'"
+- name: "set git email"
+  command: "git config --global user.email '{{ mail }}'"
 
-#- name: "set git name"
-#  command: "git config --global user.name '{{ new_user_full_name }}'"
+- name: "set git name"
+  command: "git config --global user.name '{{ full_name }}'"
 
 - name: "read SSH public key to authorize"
   shell: "cat /home/{{ user }}/.ssh/id_rsa.pub"

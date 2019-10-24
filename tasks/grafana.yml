@@ -9,7 +9,7 @@
       - name: traefik_proxy
 #      - name: influx_net
     volumes:
-      - /opt/grafana:/var/lib/grafana
+      - /var/docker/grafana:/var/lib/grafana
     labels:
       traefik.port: "3000"
       traefik.frontend.rule: "Host:grafana.romanpeters.nl"

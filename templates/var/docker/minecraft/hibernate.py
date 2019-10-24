@@ -8,14 +8,12 @@ import time
 import subprocess
 import logging
 import sys
-import paho.mqtt.client as mqtt
 import fileinput
 
 # adjust these variables as needed
 HOST = "minecraft.romanpeters.nl"
 PORT = 1337
 CONTAINER = "minecraft-server"
-BROKER = "10.10.10.20"
 
 
 logger = logging.getLogger()
@@ -78,9 +76,6 @@ def edit_motd():
 
 
 if __name__=="__main__":
-    mqtt_client = mqtt.Client("mc-hibernate")
-    mqtt_client.connect(BROKER)
-
 
     # Start the main flow
     while True:
@@ -88,7 +83,6 @@ if __name__=="__main__":
         sys.stdout.flush()  # show log in systemd service
 
         stop_server()
-        mqtt_client.publish("minecraft/state","OFF")
         sys.stdout.flush()
 
         wait_for_connection()
@@ -101,7 +95,6 @@ if __name__=="__main__":
         edit_motd()
 
         start_server()
-        mqtt_client.publish("minecraft/state","ON")
         sys.stdout.flush()
 
         logger.debug("Wait 90 seconds for the player to join")

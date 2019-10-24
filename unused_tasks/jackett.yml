@@ -5,7 +5,7 @@
     name: jackett
     image: linuxserver/jackett
     volumes:
-      - /opt/jackett:/config
+      - /var/docker/jackett:/config
       - /home/{{user}}/downloads:/downloads
     env:
       PUID: '1080'

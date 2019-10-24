@@ -24,13 +24,45 @@
 #    labels:
 #      traefik.enable: "false"
 
+
+- name: Creates /opt/minecraft
+  file:
+    path: /var/docker/minecraft
+    state: directory
+
+- name: "create Minecraft Paper Server container"
+  docker_container:
+    name: minecraft-server
+    image: itzg/minecraft-server
+    state: stopped
+    env:
+      EULA: "TRUE"
+      MEMORY: "10G"
+      #      VERSION: "1.14.3"
+      ENABLE_RCON: "true"
+      SEED: "-21937183521"
+      WHITELIST: "ElectricMonkey,Don_Deco"
+      TYPE: "PAPER"
+    ports:
+      - "1337:25565"
+    volumes:
+      - /var/docker/minecraft:/data
+    command: --noconsole
+    restart_policy: always
+    restart: no
+    labels:
+      traefik.enable: "false"
+
+    # install venv
+    #
+
 - name: copy hibernate script
   copy:
       src: "templates{{ item }}"
       dest: "{{ item }}"
       remote_src: no
   with_items:
-    - /opt/minecraft/hibernate.py
+    - /var/docker/minecraft/hibernate.py
 
 - name: copy hibernate service
   copy:
@@ -40,36 +72,13 @@
   with_items:
     - /lib/systemd/system/mc-hibernate.service
 
+
+
 - name: start and enable hibernate service
   service:
       name: mc-hibernate.service
       state: restarted
       enabled: yes
-
-
-
-#- name: "create Minecraft Paper Server container"
-#  docker_container:
-#    name: minecraft-paper-server
-#    image: itzg/minecraft-server
-#    state: stopped
-#    env:
-#      EULA: "TRUE"
-#      MEMORY: "10G"
-##      VERSION: "SNAPSHOT"
-#      ENABLE_RCON: "true"
-#      SEED: "-21937183521"
-#      WHITELIST: "ElectricMonkey,Don_Deco"
-#      TYPE: "PAPER"
-#    ports:
-#      - "1337:25565"
-#    volumes:
-#      - /opt/minecraft-paper:/data
-#    command: --noconsole
-#    restart_policy: always
-#    restart: yes
-#    labels:
-#      traefik.enable: "false"
 
 
 - name: allow access to port 1337

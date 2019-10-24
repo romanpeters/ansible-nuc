@@ -4,7 +4,7 @@
     name: esphome
     image: ottowinter/esphomeyaml
     volumes:
-      - /opt/esphome:/config
+      - /var/docker/esphome:/config
     ports:
       - "6123:6123"
 #    devices:

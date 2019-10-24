@@ -4,10 +4,10 @@
     name: syncthing
     image: linuxserver/syncthing
     volumes:
-      - /opt/syncthing:/config
-      - /opt/homeassistant:/homeassistant
-      - /opt/zigbee2mqtt:/zigbee2mqtt
-      - /opt/minecraft:/minecraft
+      - /var/docker/syncthing:/config
+      - /var/docker/homeassistant:/homeassistant
+      - /var/docker/zigbee2mqtt:/zigbee2mqtt
+      - /var/docker/minecraft:/minecraft
     ports:
       - "22000:22000"
       - "21027:21027/udp"

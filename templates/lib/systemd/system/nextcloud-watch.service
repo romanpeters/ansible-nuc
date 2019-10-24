@@ -1,0 +1,14 @@
+[Unit]
+Description=nextcloud-watch
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/snap/nextcloud
+ExecStart=/bin/sh /var/snap/nextcloud/watch.sh
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

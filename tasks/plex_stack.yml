@@ -1,0 +1,22 @@
+---
+- name: "copy Transmission configuration"
+  template:
+    src: "templates{{ item }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/var/docker/transmission/config/settings.json"
+
+- name: Create docker-compose plex stack dir
+  file:
+    path: "/var/docker-compose/plex_stack"
+    state: directory
+  
+
+- name: "copy media docker-compose"
+  template:
+    src: "templates/var/docker-compose/plex_stack/docker-compose.yml.j2"
+    dest: "/var/docker-compose/plex_stack/docker-compose.yml"
+
+- name: "compose up media"
+  docker_compose:
+    project_src: "/var/docker-compose/plex_stack"

@@ -1,0 +1,33 @@
+---
+- name: "install zsh"
+  apt:
+    name: "zsh"
+    state: "present"
+
+- name: "clone oh-my-zsh repo"
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: "/home/{{ user }}/.oh-my-zsh"
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Clone zsh-autosuggestions repo
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions.git
+    dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+  become: yes
+  become_user: "{{ user }}"
+
+
+- name: Adding .zshrc file
+  template:
+    src: ".zshrc"
+    dest: "/home/{{ user }}/.zshrc"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    backup: "yes"
+
+- name: Set zsh as default shell
+  user:
+    name: "{{ user }}"
+    shell: /bin/zsh

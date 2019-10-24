@@ -5,7 +5,7 @@
     name: sonarr
     image: linuxserver/sonarr
     volumes:
-      - /opt/sonarr:/config
+      - /var/docker/sonarr:/config
       - /home/{{user}}/tvseries:/tv
       - /home/{{user}}/downloads:/downloads
     env:

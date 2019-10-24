@@ -47,16 +47,21 @@
   pip:
     name: docker-compose
 
+- name: "add docker-compose directory"
+  file:
+    path: "/var/docker/docker-compose"
+    state: directory
+
 - name: "install Python docker-py"
   pip:
     name: docker
 
-- name: "create src dir fo docker"
-  file:
-    path: "/usr/src/docker"
-    state: directory
+    #- name: "create src dir fo docker"
+    #  file:
+    #    path: "/usr/src/docker"
+    #    state: directory
 
-# passwordless docker
+# sudoless docker
 - name: "ensure group \"docker\" exists"
   group:
     name: docker

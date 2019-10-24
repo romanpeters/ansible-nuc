@@ -4,7 +4,7 @@
     name: radarr
     image: linuxserver/radarr
     volumes:
-      - /opt/radarr:/config
+      - /var/docker/radarr:/config
       - /home/{{user}}/movies:/movies
       - /home/{{user}}/downloads:/downloads
     env:

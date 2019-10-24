@@ -1,7 +1,7 @@
 ---
 - name: create homeassistant directory
   file:
-      path: /opt/homeassistant
+      path: /var/docker/homeassistant
       state: directory
       owner: "{{ user }}"
       group: "{{ user }}"
@@ -26,10 +26,9 @@
     image: homeassistant/home-assistant
     privileged: yes
     volumes:
-      - /opt/homeassistant/config:/config
+      - /var/docker/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock:ro
-      - /opt/minecraft/logs/latest.log:/config/minecraft.log
     ports:
       - "8123:8123"
     network_mode: host
