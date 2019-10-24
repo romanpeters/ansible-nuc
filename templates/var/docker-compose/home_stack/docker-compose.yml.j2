@@ -2,13 +2,16 @@ version: "3"
  
 services:
   homeassistant:
-    image: homeassistant/home-assistant
+    image: homeassistant/home-assistant:stable
     container_name: homeassistant
     volumes:
       - /home/{{ user }}/projects/homeassistant:/config
       - /etc/localtime:/etc/localtime:ro
-    networks:
-      - traefik_proxy
+      - /var/docker/homeassistant/mysql/run/mysqld:/var/run/mysqld
+      - /dev/bus/usb:/dev/bus/usb
+      - /var/run/dbus:/var/run/dbus
+    network_mode: host
+    privileged: true
     depends_on:
       - mariadb
       - mosquitto
@@ -17,10 +20,7 @@ services:
       - glances
     restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik_proxy"
-      - "traefik.frontend.rule=Host:home.{{ url_host }}"
-      - "traefik.port=8123"
+      - "traefik.enable=false"
 
   mosquitto:
     image: eclipse-mosquitto
@@ -28,6 +28,7 @@ services:
 #    volumes:
 #      - /var/docker/mosquitto:/mosquitto
     networks:
+      - internal
       - traefik_proxy
     restart: unless-stopped
     labels:
@@ -44,7 +45,7 @@ services:
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     networks:
-      - traefik_proxy
+      - internal
     restart: unless-stopped
     labels:
       - "traefik.enable=false"
@@ -56,7 +57,10 @@ services:
       - TZ=Europe/Amsterdam
     restart: unless-stopped
     networks:
+      - internal
       - traefik_proxy
+    ports:
+      - 8126:8126
     volumes:
       - /var/docker/hadockermon:/config
       - /var/run/docker.sock:/var/run/docker.sock
@@ -70,26 +74,31 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - GLANCES_OPT=-w
+    ports:
+      - 61208:61208
     networks:
+      - internal
       - traefik_proxy
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_proxy"
-      - "traefik.frontend.rule=Host:glances.{{ url_host }}"
-      - "traefik.port=61208"
+      - "traefik.frontend.rule=Host:glances.romanpeters.nl"
+      - "traefik.port=61208" 
+#      - "traefik.frontend.auth.basic.users=romanpeters:$$apr1$$iMEzu6Tq$$7C655jttFu6PbtSR7jQJU/,tanlambrechtsen:$$apr1$$Ej1QoBY6$$Q9wyRxVinbs9V7WvRrOBN."
 
   mariadb:
     image: mariadb
     container_name: mariadb_homeassistant
     environment:
-      - MYSQL_ROOT_PASSWORD={{ password_mariadb }}
+      - MYSQL_ROOT_PASSWORD={{ mariadb_password }}
       - MYSQL_DATABASE=homeassistant
     restart: unless-stopped
     networks:
-      - traefik_proxy
+      - internal
     volumes:
       - /var/docker/homeassistant/mysql:/var/lib/mysql
+      - /var/docker/homeassistant/mysql/run/mysqld:/var/run/mysqld
       - /etc/localtime:/etc/localtime:ro
     labels:
       - "traefik.enable=false"
@@ -106,6 +115,7 @@ services:
     ports:
       - "6123:6123"
     networks:
+      - internal
       - traefik_proxy
     restart: unless-stopped
     labels:
@@ -117,4 +127,5 @@ services:
 networks:
   traefik_proxy:
     external: true
-
+  internal:
+    external: false

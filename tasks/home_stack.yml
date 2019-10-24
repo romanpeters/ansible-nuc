@@ -1,4 +1,10 @@
 ---
+- name: Install extra Home Assistant deps
+  apt:
+    name:
+      - ffmpeg
+      - vlc
+
 - name: Ensure projects dir exists
   file:
     path: /home/{{ user }}/projects
@@ -9,6 +15,7 @@
     repo: https://github.com/romanpeters/home-assistant.git
     dest: /home/{{ user }}/projects/homeassistant
     accept_hostkey: yes
+  ignore_errors: True
 
 - name: copy zigbee2mqtt configuration
   template:
