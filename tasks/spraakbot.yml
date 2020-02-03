@@ -1,30 +1,35 @@
 ---
+- set_fact:
+    telegram_bot: spraakbot
+
 - name: "clone from GitHub"
   git:
     repo: "git@github.com:romanpeters/voice-message-bot.git"
-    dest: "/var/docker/spraakbot"
+    dest: "/var/docker/{{ telegram_bot }}"
     key_file: "/home/{{ user }}/.ssh/id_rsa"
     accept_hostkey: yes
 
 - name: "create redacted.py"
-  shell: echo 'API_KEY = "{{ spraakbot_token }}"' > /var/docker/spraakbot/redacted.py
+  shell: echo 'API_KEY = "{{ spraakbot_token }}"' > /var/docker/{{ telegram_bot }}/redacted.py
 
 - name: "change owner"
   file:
-    path: /var/docker/spraakbot/
+    path: /var/docker/{{ telegram_bot }}/
     state: directory
     recurse: yes
     owner: "{{ user }}"
     group: "{{ user }}"
 
-- name: "create spraakbot container"
-  command: docker build -t spraakbot:latest /var/docker/spraakbot
+- name: "create {{ telegram_bot }} container"
+  command: docker build -t {{ telegram_bot }}:latest /var/docker/{{ telegram_bot }}
   become: "{{ user }}"
 
-- name: "run spraakbot container"
+- name: "run {{ telegram_bot }} container"
   docker_container:
-    name: spraakbot
-    image: spraakbot:latest
+    name: "{{ telegram_bot }}"
+    image: "{{ telegram_bot }}:latest"
+    volumes:
+      - /var/docker/{{ telegram_bot }}:/bot
     restart_policy: always
     restart: yes
     labels:
