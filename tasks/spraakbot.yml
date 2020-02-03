@@ -1,0 +1,32 @@
+---
+- name: "clone from GitHub"
+  git:
+    repo: "git@github.com:romanpeters/voice-message-bot.git"
+    dest: "/var/docker/spraakbot"
+    key_file: "/home/{{ user }}/.ssh/id_rsa"
+    accept_hostkey: yes
+
+- name: "create redacted.py"
+  shell: echo 'API_KEY = "{{ spraakbot_token }}"' > /var/docker/spraakbot/redacted.py
+
+- name: "change owner"
+  file:
+    path: /var/docker/spraakbot/
+    state: directory
+    recurse: yes
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: "create spraakbot container"
+  command: docker build -t spraakbot:latest /var/docker/spraakbot
+  become: "{{ user }}"
+
+- name: "run spraakbot container"
+  docker_container:
+    name: spraakbot
+    image: spraakbot:latest
+    restart_policy: always
+    restart: yes
+    labels:
+      traefik.enabled: "false"
+
