@@ -15,6 +15,7 @@ services:
     volumes:
       - /media/synology/movies:/data/movies
       - /media/synology/tvseries:/data/tvshows
+      - /media/synology/courses:/data/courses
       - /var/docker/plex/config/:/config
       - /tmp:/transcode
     devices:
@@ -43,7 +44,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=tautulli"
-      - "traefik.frontend.rule=Host:tautulli.{{ url_host }}"
+      - "traefik.frontend.rule=Host:tautulli.romanpeters.nl"
       - "traefik.port=8181"
       - "traefik.docker.network=traefik_proxy"
     depends_on:
@@ -60,12 +61,12 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /var/docker/transmission/config/:/config
-      - /var/docker/transmission/downloads/:/downloads
+      - /media/synology/transmission/:/downloads
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.backend=transmission"
-      - "traefik.frontend.rule=Host:transmission.{{ url_host }}"
+      - "traefik.frontend.rule=Host:transmission.romanpeters.nl"
       - "traefik.port=9091"
       - "traefik.docker.network=traefik_proxy"
 
@@ -90,10 +91,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=sonarr"
-      - "traefik.frontend.rule=Host:sonarr.{{ url_host }}"
+      - "traefik.frontend.rule=Host:sonarr.romanpeters.nl"
       - "traefik.port=8989"
       - "traefik.docker.network=traefik_proxy"
-      - "traefik.frontend.auth.basic.users=romanpeters:$$apr1$$iMEzu6Tq$$7C655jttFu6PbtSR7jQJU/,tanlambrechtsen:$$apr1$$Ej1QoBY6$$Q9wyRxVinbs9V7WvRrOBN."
     depends_on:
       - transmission
 
@@ -118,10 +118,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=radarr"
-      - "traefik.frontend.rule=Host:radarr.{{ url_host }}"
+      - "traefik.frontend.rule=Host:radarr.romanpeters.nl"
       - "traefik.port=7878"
       - "traefik.docker.network=traefik_proxy"
-      - "traefik.frontend.auth.basic.users=romanpeters:$$apr1$$iMEzu6Tq$$7C655jttFu6PbtSR7jQJU/,tanlambrechtsen:$$apr1$$Ej1QoBY6$$Q9wyRxVinbs9V7WvRrOBN."
     depends_on:
       - transmission
 
@@ -141,7 +140,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=jackett"
-      - "traefik.frontend.rule=Host:jackett.{{ url_host }}"
+      - "traefik.frontend.rule=Host:jackett.romanpeters.nl"
       - "traefik.port=9117"
       - "traefik.docker.network=traefik_proxy"
 
@@ -163,7 +162,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=bazarr"
-      - "traefik.frontend.rule=Host:bazarr.{{ url_host }}"
+      - "traefik.frontend.rule=Host:bazarr.romanpeters.nl"
       - "traefik.port=6767"
       - "traefik.docker.network=traefik_proxy"
 
@@ -173,11 +172,11 @@ services:
     networks:
       - traefik_proxy
     environment:
-      - LETTERBOXD_USER={{ user }}
+      - LETTERBOXD_USER=romanpeters
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:letterboxd-watchlist.{{ url_host }}"
+      - "traefik.frontend.rule=Host:letterboxd-watchlist.romanpeters.nl"
       - "traefik.port=5000"
       - "traefik.docker.network=traefik_proxy"
 
